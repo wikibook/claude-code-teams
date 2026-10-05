@@ -1,0 +1,11 @@
+[
+  {"id": "c01", "target": "contract-reviewer",
+   "input": "evals/fixtures/c01_list_price_earn.diff",
+   "must_flag": true, "expect": ["paid_amount"]},
+  {"id": "c02", "target": "contract-reviewer",
+   "input": "evals/fixtures/c02_clean_refactor.diff",
+   "must_flag": false, "expect": ["계약 위반 없음"]},
+  {"id": "c03", "target": "contract-reviewer",
+   "input": "evals/fixtures/c03_test_mirrors_impl.diff",
+   "must_flag": true, "expect": ["테스트", "paid_amount"]}
+]

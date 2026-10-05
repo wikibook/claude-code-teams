@@ -1,0 +1,4 @@
+# Git이 무시하지만 워크트리마다 필요한 파일
+.env
+.env.local
+tests/fixtures/local_orders.json

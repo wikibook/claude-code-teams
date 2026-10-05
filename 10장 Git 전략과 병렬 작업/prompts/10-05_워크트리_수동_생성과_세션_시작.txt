@@ -1,0 +1,3 @@
+git worktree add ../minishop-points -b points
+cd ../minishop-points
+claude

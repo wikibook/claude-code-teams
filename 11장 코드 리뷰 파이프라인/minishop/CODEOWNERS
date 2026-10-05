@@ -1,0 +1,16 @@
+# 미니숍 파일 오너십 (9.3.1)
+# 각 경로의 변경은 해당 오너의 승인을 요구한다.
+
+# 공유 계층: 모델과 금액 규칙은 결제 도메인이 지킨다
+src/minishop/models.py          @payments-team
+src/minishop/pricing.py         @payments-team
+specs/                          @payments-team
+
+# 기능 계층: 각 기능의 담당자
+src/minishop/coupons.py         @dev-a
+src/minishop/refunds.py         @dev-b
+src/minishop/orders.py          @dev-a @dev-b
+
+# 검증 게이트: 게이트 파일의 담당자
+.github/workflows/              @payments-team @dev-a @dev-b
+tests/test_pricing_contract.py  @payments-team

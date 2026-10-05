@@ -1,0 +1,2 @@
+@moneylog/services/summary.py 이 파일의 집계 로직을 설명해줘.
+환불(음수 금액)이 어떻게 처리되는지 중심으로.

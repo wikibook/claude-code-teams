@@ -1,0 +1,1 @@
+claude --from-pr 1234

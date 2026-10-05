@@ -1,0 +1,21 @@
+{
+    "name": "notihub-plugins",
+    "owner": {
+        "name": "notihub standards"
+    },
+    "plugins": [
+        {
+            "name": "notihub-kit",
+            "source": "./plugins/notihub-kit",
+            "description": "조직 공용 작업 도구 — 커밋 규약, 리뷰 절차, 조사 기록"
+        },
+        {
+            "name": "web-audit",
+            "source": {
+                "source": "github",
+                "repo": "notihub/web-audit-plugin"
+            },
+            "description": "관리 콘솔의 접근성·성능 점검 스킬 (웹 팀 관리)"
+        }
+    ]
+}

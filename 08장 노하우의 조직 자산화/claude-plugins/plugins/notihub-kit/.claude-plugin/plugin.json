@@ -1,0 +1,8 @@
+{
+    "name": "notihub-kit",
+    "description": "notihub 조직 공용 작업 도구 — 커밋 규약, 리뷰 절차, 조사 기록",
+    "version": "1.2.0",
+    "author": {
+        "name": "notihub standards"
+    }
+}

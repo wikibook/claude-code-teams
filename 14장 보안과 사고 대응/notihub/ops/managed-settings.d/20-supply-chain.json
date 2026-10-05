@@ -1,0 +1,12 @@
+{
+  "allowedMcpServers": [
+    { "serverName": "github" },
+    { "serverCommand": ["npx", "-y", "@notihub/issue-triage-mcp@1.4.2"] },
+    { "serverUrl": "https://mcp.pg-partner.example/*" }
+  ],
+  "allowManagedMcpServersOnly": true,
+  "strictKnownMarketplaces": [
+    { "source": "github", "repo": "notihub/claude-plugins" }
+  ],
+  "disableSideloadFlags": true
+}

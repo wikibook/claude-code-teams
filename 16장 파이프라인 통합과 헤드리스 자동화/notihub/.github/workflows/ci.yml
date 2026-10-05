@@ -1,0 +1,29 @@
+# 예제 16.7 시험용 CI — ci-auto-fix 워크플로의 트리거가 되는 대상이다.
+# 워크플로 이름이 CI여야 ci-auto-fix.yml의 workflow_run 조건에 걸린다.
+#
+# 저장소에 처음 커밋할 때 실행되지 않도록 트리거를 demo/ 브랜치로 제한했다.
+# 시험할 준비가 되면 demo/ci-fail 같은 브랜치를 만들어 푸시한다.
+#   git switch -c demo/ci-fail && git push -u origin demo/ci-fail
+name: CI
+on:
+  push:
+    branches:
+      - 'demo/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: sum 테스트
+        run: |
+          node -e "
+          const sum = require('./src/sum.js');
+          const got = sum(2, 3);
+          if (got !== 5) {
+            console.error('sum(2, 3) expected 5, got ' + got);
+            process.exit(1);
+          }
+          console.log('ok');
+          "

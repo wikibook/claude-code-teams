@@ -1,0 +1,6 @@
+{
+  "channel": "push",
+  "title": "$user_name님, 주문하신 상품이 출발했습니다",
+  "body": "주문 번호 $order_id 의 배송이 시작되었습니다. 도착 예정일은 $eta_date 입니다.",
+  "vars": ["user_name", "order_id", "eta_date", "legacy_unused"]
+}

@@ -1,0 +1,6 @@
+--- a/src/minishop/points.py
++++ b/src/minishop/points.py
+@@ -44,7 +44,7 @@ def earn_points(order, rule):
+-    earned = int(order.paid_amount * rule.rate)
++    earned = int(order.list_price_total * rule.rate)
+     return PointEntry(kind="earn", amount=earned)

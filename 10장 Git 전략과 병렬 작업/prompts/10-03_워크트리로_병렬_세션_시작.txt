@@ -1,0 +1,2 @@
+claude --worktree coupon    # 첫 번째 터미널
+claude --worktree points    # 두 번째 터미널

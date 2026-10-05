@@ -1,0 +1,2 @@
+/plugin marketplace add notihub/claude-plugins
+/plugin install notihub-kit@notihub-plugins

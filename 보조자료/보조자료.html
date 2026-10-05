@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>팀을 위한 클로드 코드 완벽 가이드 — 보조자료</title><style>
+:root{--ink:#1a1a1a;--label:#5b6472;--border:#d6dae0;--blue:#2563eb;--blue-bg:#edf3fd;--bg:#f6f7f9;--card:#fff;
+--code:#f4f6f9;--red:#e5484d;--red-bg:#fdecec;--green:#0e9f5d;--green-bg:#e7f7ee;--amber:#d97706;--amber-bg:#fdf3e1;--gray:#9aa3af}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;font-size:15px}
+header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:14px}
+header h1{font-size:17px;margin:0;font-weight:700;white-space:nowrap}
+header .sub{color:var(--label);font-size:13px;white-space:nowrap}
+header .search{margin-left:auto;position:relative;width:320px}
+header .search input{width:100%;padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;font-family:inherit}
+#sresult{position:absolute;right:0;top:38px;width:480px;max-height:420px;overflow:auto;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.08);display:none;z-index:9}
+#sresult a{display:block;padding:8px 12px;border-bottom:1px solid var(--border);text-decoration:none;color:var(--ink);font-size:13px}
+#sresult a:hover{background:var(--blue-bg)}
+#sresult a b{color:var(--blue);font-weight:600;display:block;font-size:12px}
+#sresult mark{background:#fff3b0;padding:0 1px}
+.layout{display:flex;min-height:calc(100vh - 54px)}
+nav{width:270px;flex:0 0 270px;background:#fff;border-right:1px solid var(--border);padding:16px 12px;position:sticky;top:54px;height:calc(100vh - 54px);overflow:auto}
+.nav-group{font-size:11.5px;color:var(--label);letter-spacing:.04em;margin:14px 10px 6px}
+.nav-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:13.5px;line-height:1.4}
+.nav-item:hover{background:var(--bg)}
+.nav-item.active{background:var(--blue-bg);color:var(--blue);font-weight:600}
+.badge{font-style:normal;font-size:11px;color:var(--label);background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0 7px;white-space:nowrap}
+.badge:empty{display:none}.badge.done{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+main{flex:1;padding:24px clamp(16px,3vw,48px) 60px;min-width:0}
+.panel{display:none}.panel.active{display:block}
+.doc{max-width:1400px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px 44px}
+.doc h1{font-size:26px;margin:0 0 18px;line-height:1.3}
+.doc h2{font-size:19px;margin:34px 0 12px;padding-top:14px;border-top:1px solid var(--border)}
+.doc h3{font-size:16px;margin:24px 0 8px}
+.doc p{margin:0 0 12px}
+.doc table{border-collapse:collapse;width:100%;margin:14px 0 18px;font-size:13.5px}
+.doc th,.doc td{border:1px solid var(--border);padding:8px 10px;vertical-align:top;text-align:left}
+.doc th{background:#f2f2f2;font-weight:700}
+.doc pre{background:var(--code);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.55}
+.doc code{font-family:"JetBrains Mono","D2Coding",Consolas,monospace;font-size:.92em}
+.doc p code,.doc li code,.doc td code{background:var(--code);padding:1px 5px;border-radius:4px}
+.doc img{max-width:100%;border:1px solid var(--border);border-radius:10px;margin:8px 0 16px;display:block}
+.doc ul,.doc ol{padding-left:22px;margin:0 0 12px}
+.doc li{margin:3px 0}
+.doc li.task{list-style:none;margin-left:-22px;padding-left:26px;position:relative;cursor:pointer}
+.box{display:inline-block;width:15px;height:15px;border:1.5px solid var(--label);border-radius:4px;vertical-align:middle;background:#fff;cursor:pointer;position:relative}
+.box.on{background:var(--blue);border-color:var(--blue)}
+.box.on::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.doc li.task .box{position:absolute;left:0;top:6px}
+.doc li.task.on{color:var(--label);text-decoration:line-through}
+.doc td.tick{width:44px;text-align:center}
+.doc blockquote{margin:12px 0;padding:10px 16px;border-left:4px solid var(--blue);background:var(--blue-bg);border-radius:0 8px 8px 0}
+.doc hr{border:0;border-top:1px solid var(--border);margin:26px 0}
+.pager{display:flex;justify-content:space-between;margin-top:18px;font-size:13.5px}
+.pager a{color:var(--blue);text-decoration:none}
+/* 위젯 공통 */
+.w{margin:12px 0 18px}.w:first-child{margin-top:0}
+.wbox{border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:#fbfcfd}
+.wbox h4{margin:0 0 10px;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.wbox h4 .tag{font-size:11px;color:var(--blue);background:var(--blue-bg);border-radius:10px;padding:1px 8px;font-weight:600}
+.wbox .hint{font-size:12.5px;color:var(--label);margin:0 0 10px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;white-space:nowrap}
+.seg button{border:0;background:transparent;padding:4px 10px;font-size:12.5px;cursor:pointer;color:var(--label);font-family:inherit}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button.on-no,.seg button.on-yes{color:#fff}
+.seg button.on-yes{background:var(--green)}.seg button.on-no{background:var(--red)}.seg button.on-na{background:var(--gray);color:#fff}
+.qt{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0 4px}
+.qt td,.qt th{border:1px solid var(--border);padding:8px 10px;vertical-align:top}
+.qt th{background:#f2f2f2;text-align:left}
+.qt td.n{width:34px;text-align:center;color:var(--label)}
+.qt td.ans{width:1%;white-space:nowrap;text-align:center}
+.qt tr.hit td{background:var(--red-bg)}
+.qt tr.ok td{background:var(--green-bg)}
+.qt tr.na td{background:#f3f4f6}
+.qt td.sub{color:var(--label);font-size:12.5px}
+.res{border-radius:10px;padding:12px 16px;margin:10px 0;font-size:13.5px;border:1px solid var(--border);background:#fff}
+.res.good{border-color:var(--green);background:var(--green-bg)}
+.res.bad{border-color:var(--red);background:var(--red-bg)}
+.res.warn{border-color:var(--amber);background:var(--amber-bg)}
+.res b{font-weight:700}
+.res ul{margin:6px 0 0;padding-left:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:8px 0 14px}
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.card .k{font-size:12px;color:var(--label)}
+.card .v{font-size:22px;font-weight:700;margin:2px 0}
+.card .d{font-size:12px;color:var(--label)}
+.card a{color:var(--blue);text-decoration:none;font-size:12.5px}
+.bars{margin:8px 0}
+.bar{display:grid;grid-template-columns:minmax(120px,200px) 1fr 90px;align-items:center;gap:10px;font-size:13px;margin:5px 0}
+.bar .tr{height:16px;background:#eceff3;border-radius:8px;overflow:hidden;display:flex}
+.bar .f1{background:var(--blue);height:100%}.bar .f2{background:var(--red);height:100%}
+.bar .f3{background:var(--gray);height:100%}
+.bar .lab{color:var(--label);text-align:right}
+.legend{font-size:12px;color:var(--label);margin:4px 0 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+.stage{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:8px 0 6px}
+.stage .st{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px;position:relative}
+.stage .st h5{margin:0 0 6px;font-size:13.5px}
+.stage .st .when{font-size:11.5px;color:var(--label);margin-bottom:6px}
+.stage .st a{display:block;font-size:12.5px;color:var(--blue);text-decoration:none;padding:3px 6px;border-radius:6px;background:var(--blue-bg);margin:3px 0}
+.stage .st a:hover{background:#dce8fb}
+.stage .st::after{content:"›";position:absolute;right:-14px;top:8px;color:var(--gray);font-size:18px;line-height:1}
+.stage .st:last-child::after{content:""}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0}
+.step{background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 8px;cursor:pointer;text-align:center;font-size:12px;line-height:1.35;position:relative}
+.step b{display:block;font-size:13px;margin-bottom:3px}
+.step:hover{border-color:var(--blue)}
+.step.done{background:var(--green-bg);border-color:var(--green)}
+.step .chk{position:absolute;top:5px;right:6px;width:13px;height:13px;border:1.5px solid var(--gray);border-radius:3px;background:#fff}
+.step.done .chk{background:var(--green);border-color:var(--green)}
+.prog{height:8px;background:#eceff3;border-radius:4px;overflow:hidden;margin:6px 0}
+.prog i{display:block;height:100%;background:var(--green)}
+.ring{display:flex;align-items:center;gap:16px}
+.ring svg{flex:0 0 auto}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px 16px;margin:6px 0 12px}
+.form label{font-size:12.5px;color:var(--label);display:block}
+.form input,.form select{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:7px;font-size:13.5px;font-family:inherit;background:#fff}
+.form .grp{grid-column:1/-1;font-size:12.5px;font-weight:700;margin-top:4px;color:var(--ink)}
+.hbar{display:grid;grid-template-columns:140px 1fr;align-items:center;gap:12px;margin:8px 0;font-size:13px}
+.hbar .tr{height:26px;background:#eceff3;border-radius:6px;overflow:hidden;display:flex}
+.hbar .tr span{display:block;height:100%;color:#fff;font-size:11.5px;line-height:26px;text-align:center;overflow:hidden;white-space:nowrap;min-width:0}
+.hbar .cap{font-weight:600}
+.hbar .cap small{display:block;font-weight:400;color:var(--label)}
+.btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+.rec{width:100%;min-height:210px;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:"JetBrains Mono","D2Coding",Consolas,monospace;font-size:12.5px;background:#fff;resize:vertical}
+.chain{font-size:12.5px;color:var(--label);margin-top:6px}
+.sig{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin:8px 0}
+.sig div{height:34px;border-radius:7px;background:#eceff3;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--label)}
+.sig div.y{background:var(--red);color:#fff;font-weight:700}.sig div.n{background:var(--green-bg);color:var(--green)}.sig div.u{background:#d1d5db;color:#374151}
+@media (max-width:1100px){.stage{grid-template-columns:repeat(2,1fr)}.stage .st::after{content:""}}
+@media (max-width:900px){nav{display:none}main{padding:16px}.doc{padding:22px 18px}header .search{width:200px}header .sub{display:none}}
+.stage .st .when{font-size:11.5px;color:#3D5578;margin-bottom:6px}
+.stage .st .d{display:block;font-size:12.5px;color:var(--ink);padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#fff;margin:4px 0}
+.note{font-size:12.5px;color:var(--label);text-align:center;margin:10px 0 0}
+.deps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:8px 0}
+.deps .dp{border-radius:10px;padding:12px 10px;text-align:center;position:relative}
+.deps .dp h5{margin:0 0 4px;font-size:13.5px}
+.deps .dp .ch{font-size:11.5px;color:#3D5578}
+.deps .dp .cnt{font-size:12.5px;margin-top:6px}
+.deps .dp .cnt b{color:var(--red)}
+.deps .dp::after{content:"›";position:absolute;right:-14px;top:14px;color:var(--gray);font-size:18px;line-height:1}
+.deps .dp:last-child::after{content:""}
+.deps .dp.first{outline:2px solid var(--red)}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px;align-items:center}
+.toolbar .lbl{font-size:12px;color:var(--label);margin-right:4px}
+.doc td[contenteditable]{background:#fffdf3;min-width:120px;outline:none;cursor:text}
+.doc td[contenteditable]:focus{background:#fff8dc;box-shadow:inset 0 0 0 2px var(--blue)}
+.doc td[contenteditable]:empty::before{content:attr(data-ph);color:#b4b9c2}
+.head4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 14px;margin:6px 0 10px}
+.head4 label{font-size:12.5px;color:var(--label)}
+.head4 input{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:7px;font-size:13.5px;font-family:inherit;background:#fffdf3}
+.formcode{width:100%;min-height:360px;border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:"JetBrains Mono","D2Coding",Consolas,monospace;font-size:13px;line-height:1.55;background:#fffdf3;resize:vertical;tab-size:2}
+.step small.out{display:block;color:var(--ink);margin-top:4px;padding-top:4px;border-top:1px dashed var(--border);font-size:11.5px}
+@media (max-width:1100px){.deps{grid-template-columns:repeat(2,1fr)}.deps .dp::after{content:""}}
+@media print{nav,header,.pager,.btn{display:none}.panel{display:block!important;page-break-after:always}.doc{border:0;max-width:none}}
+</style></head>
+<body>
+<header><h1>팀을 위한 클로드 코드 완벽 가이드 — 보조자료</h1><span class="sub">팀 도입 키트 · 스터디 가이드 · 자가 진단</span>
+<div class="search"><input id="q" type="search" placeholder="전체 검색 (예: 권한 프로파일, 9.3.3)"><div id="sresult"></div></div></header>
+<div class="layout">
+<nav><div class="nav-group">시작</div><a class="nav-item" href="#home" data-target="home"><span>보조자료 안내</span><em class="badge" data-badge="home"></em></a><div class="nav-group">팀 도입 키트</div><a class="nav-item" href="#s01" data-target="s01"><span>01 팀 도입 키트 안내</span><em class="badge" data-badge="s01"></em></a><a class="nav-item" href="#s02" data-target="s02"><span>02 파일럿 기준 문서 양식</span><em class="badge" data-badge="s02"></em></a><a class="nav-item" href="#s03" data-target="s03"><span>03 보안 검토 답변 양식</span><em class="badge" data-badge="s03"></em></a><a class="nav-item" href="#s04" data-target="s04"><span>04 팀 실행 예외 신청서</span><em class="badge" data-badge="s04"></em></a><a class="nav-item" href="#s05" data-target="s05"><span>05 팀 공통 CLAUDE.md 예시와 작성 지침</span><em class="badge" data-badge="s05"></em></a><a class="nav-item" href="#s06" data-target="s06"><span>06 권한 정책 문서 예시와 작성 지침</span><em class="badge" data-badge="s06"></em></a><a class="nav-item" href="#s07" data-target="s07"><span>07 PR 템플릿 예시와 작성 지침</span><em class="badge" data-badge="s07"></em></a><a class="nav-item" href="#s08" data-target="s08"><span>08 온보딩 문서 예시와 작성 지침</span><em class="badge" data-badge="s08"></em></a><div class="nav-group">학습과 점검</div><a class="nav-item" href="#s09" data-target="s09"><span>09 팀 스터디 가이드</span><em class="badge" data-badge="s09"></em></a><a class="nav-item" href="#s10" data-target="s10"><span>10 도입 조직 자가 진단</span><em class="badge" data-badge="s10"></em></a></nav>
+<main><section class="panel" id="home" data-title="보조자료 안내"><div class="doc"><h1 id="_1">보조 학습자료</h1>
+<p>『팀을 위한 클로드 코드 완벽 가이드』의 독자용 보조자료입니다. 이 책은 개인의 사용법이
+아니라 팀의 표준·공정·거버넌스를 다루므로, 보조자료도 "요약본"이 아니라 <strong>책의
+결정을 조직에 실제로 옮기는 도구</strong>로 구성했습니다. 파일을 번호순으로 읽으면 도입
+과정의 순서와 일치합니다.</p>
+<p><br></p>
+<div class="w" data-w="home"></div>
+
+<h2 id="_2">구성</h2>
+<table>
+<thead>
+<tr>
+<th>번호</th>
+<th>파일</th>
+<th>성격</th>
+<th>대상</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>팀도입키트_안내</td>
+<td>02~08 양식의 용도·작성 시점·배치 순서 안내</td>
+<td>팀 리드, 도입 담당자</td>
+</tr>
+<tr>
+<td>02</td>
+<td>파일럿_기준_문서_양식</td>
+<td>파일럿의 대상·기간·성공/실패 기준 확정 (6.1.2)</td>
+<td>리드</td>
+</tr>
+<tr>
+<td>03</td>
+<td>보안_검토_답변_양식</td>
+<td>계약·데이터 범위·기술 통제의 사실 확인 회신 (6.4)</td>
+<td>기술 담당</td>
+</tr>
+<tr>
+<td>04</td>
+<td>팀_실행_예외_신청서_양식</td>
+<td>에이전트 팀 실행의 손익 계산과 승인 (15.2.1)</td>
+<td>실행자, 리드</td>
+</tr>
+<tr>
+<td>05</td>
+<td>팀_공통_CLAUDE.md_예시</td>
+<td>팀 공통 규칙 파일의 구성 예 (7.1.1)</td>
+<td>리드</td>
+</tr>
+<tr>
+<td>06</td>
+<td>권한_정책_문서_예시</td>
+<td>기본 권한 모드와 계획 검토 의무 작업 (7.3)</td>
+<td>리드</td>
+</tr>
+<tr>
+<td>07</td>
+<td>PR_템플릿_예시</td>
+<td>가정 섹션과 결합 전 확인을 강제하는 템플릿 (9.3.3)</td>
+<td>팀 전체</td>
+</tr>
+<tr>
+<td>08</td>
+<td>온보딩_문서_예시</td>
+<td>신규 입사자의 첫 주 안내 (8.3)</td>
+<td>리드, 신규 입사자</td>
+</tr>
+<tr>
+<td>09</td>
+<td>팀스터디가이드</td>
+<td>6주 + 심화 2회 커리큘럼. 주차별 목표·읽기·실습·토론·산출물·진행자 메모</td>
+<td>스터디 진행자, 참가 팀</td>
+</tr>
+<tr>
+<td>10</td>
+<td>자가진단</td>
+<td>기반 관행 5문항, 안티패턴 조기 신호 10문항, 리더 결정 점검 30항목, 결과 기록 양식</td>
+<td>리드, 엔지니어링 매니저, 구성원</td>
+</tr>
+</tbody>
+</table>
+<p>그림은 <code>images/</code>에 있습니다(도입 단계별 문서 배치, 스터디 로드맵, 진단 부문의 의존 순서).</p>
+<p><br></p>
+<h2 id="_3">권하는 사용 순서</h2>
+<ol>
+<li>도입을 검토하는 조직은 <strong>10의 진단 A</strong>로 시작합니다. "아니오"가 셋 이상이면 도구보다
+   표준이 먼저이므로 3부(6~8장)와 02·05·06을 먼저 다룹니다.</li>
+<li>팀이 함께 읽는다면 <strong>09</strong>를 따릅니다. 6주 뒤 저장소에 남는 산출물이 도입 문서가
+   됩니다. 4주차에 02·03을 작성하고 5주차에 07을 작성합니다.</li>
+<li>운영 단계에 진입한 조직은 분기마다 <strong>10의 진단 B·C</strong>를 반복합니다. "예"와 미결정의
+   수가 줄어드는 추세가 도입 진척의 지표입니다.</li>
+</ol>
+<p><br></p>
+<h2 id="_4">원본</h2>
+<ul>
+<li>02~08은 각각 "왜 필요한가 → 양식/예시 원문 → 항목별 해설 → 자기 팀에 맞출 때 →
+  점검" 구조입니다. 원문은 예제 저장소의 실제 파일(6장 paylog/docs, 7·8장 notihub, 9장
+  minishop)을 코드 블록으로 수록했으며, 본문 예제와 문자 단위로 일치합니다. 04는 표
+  15.3의 양식입니다.</li>
+<li>10의 진단 문항은 본문 17.3과 부록 B의 표와 같습니다.</li>
+</ul></div></section><section class="panel" id="s01" data-title="01 팀 도입 키트 안내"><div class="doc"><h1 id="_1">팀 도입 키트 안내</h1>
+<p>『팀을 위한 클로드 코드 완벽 가이드』의 문서 양식 팩이다. 클로드 코드를 팀에
+도입하고 운영하는 과정에서 필요한 문서 7종(02~08)을, 본문 사례(paylog·notihub·
+minishop)의 실제 파일을 바탕으로 그대로 채워 쓸 수 있게 묶었다.</p>
+<p>이 문서들은 선택 사항이 아니라 본문이 각 단계의 <strong>결정을 기록하는 수단</strong>으로
+제시한 것이다. 파일럿 기준을 문서로 확정하지 않으면 결과에 따라 기준이 바뀌어
+파일럿이 끝나지 않는다(6.1.2). 권한 정책을 문서로 두지 않으면 허용 범위가
+늘어나기만 한다(14.1). PR 템플릿에 가정 섹션이 없으면 코드에 없는 전제가 결합
+시점에야 드러난다(9.3.3). 각 양식은 그 결정을 빠뜨리지 않게 하는 최소 형식이다.</p>
+<h2 id="_2">구성</h2>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>무엇을 결정하는가</th>
+<th>작성 시점</th>
+<th>작성·승인</th>
+<th>본문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>02_파일럿_기준_문서_양식.md</td>
+<td>파일럿의 대상·기간·성공 기준·실패 기준</td>
+<td>파일럿 시작 전</td>
+<td>리드 작성, 조직 승인</td>
+<td>6.1.2, 예제 6.1</td>
+</tr>
+<tr>
+<td>03_보안_검토_답변_양식.md</td>
+<td>계약·데이터 범위·기술 통제의 사실 확인</td>
+<td>보안·법무 검토 요청 시</td>
+<td>기술 담당 작성, 보안팀 검토</td>
+<td>6.4, 예제 6.2</td>
+</tr>
+<tr>
+<td>04_팀_실행_예외_신청서_양식.md</td>
+<td>에이전트 팀 실행의 손익과 승인</td>
+<td>팀 실행 착수 전</td>
+<td>실행자 작성, 리드 승인</td>
+<td>15.2.1, 표 15.3</td>
+</tr>
+<tr>
+<td>05_팀_공통_CLAUDE.md_예시.md</td>
+<td>팀 공통 규칙(구조·명령·계약·규약·금지)</td>
+<td>파일럿 시작 시</td>
+<td>리드 작성, 개정은 7.5.2 절차</td>
+<td>7.1.1, 예제 7.1</td>
+</tr>
+<tr>
+<td>06_권한_정책_문서_예시.md</td>
+<td>기본 권한 모드와 계획 검토 의무 작업</td>
+<td>파일럿 시작 시</td>
+<td>리드 작성</td>
+<td>7.3, 예제 7.9</td>
+</tr>
+<tr>
+<td>07_PR_템플릿_예시.md</td>
+<td>PR마다 명시할 가정과 결합 전 확인</td>
+<td>공정 표준화 시</td>
+<td>팀 합의</td>
+<td>9.3.3, 예제 9.11</td>
+</tr>
+<tr>
+<td>08_온보딩_문서_예시.md</td>
+<td>신규 입사자의 첫 주 읽기 순서와 문의처</td>
+<td>확산 시작 시</td>
+<td>리드 작성, 신규 입사자가 갱신</td>
+<td>8.3, 예제 8.4</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">도입 단계별 배치</h2>
+<div class="w" data-w="stagemap"></div>
+
+<p><strong>결정 단계(파일럿 전)</strong>에서는 02와 03을 작성한다. 02는 채택·산출·체감의 세
+지표와 실패 판정 기준(사용 정착·품질 악화·보안 차단)을 시작 전에 숫자로 확정하는
+문서다. 03은 보안 검토가 도입 막바지에 일정을 멈추지 않도록, 학습 사용·보존·
+데이터 범위·기술 통제를 근거 문서와 확인일로 미리 정리하는 문서다.</p>
+<p><strong>파일럿 단계</strong>에서는 05·06·07을 저장소에 배치한다. 파일 이름은 각 문서 머리의
+원래 경로(CLAUDE.md, docs/policies/permissions.md, .github/pull_request_template.md)를
+따른다. 05는 "무엇을 넣고 무엇을 뺄 것인가"(7.1.1)의 기준대로 반복되는 정보만
+담는다. 개인 취향에 해당하는 설정은 개인 설정에 남긴다.</p>
+<p><strong>확산 단계</strong>에서는 08로 온보딩을 표준화한다. 온보딩 문서는 규칙의 원본이 아니라
+읽는 순서와 문의처를 안내하는 문서이므로, 규칙 자체는 05·06에만 둔다.</p>
+<p><strong>운영 단계</strong>에서는 에이전트 팀을 시험할 때 04를 적용한다. 분기마다 10(자가
+진단)으로 표준의 상태를 점검한다. 손익이 세 차례 이상 검증된 작업 유형은 예외에서
+표준 사용으로 전환한다.</p>
+<h2 id="_4">사용할 때 지킬 것</h2>
+<ul>
+<li>예시로 적힌 팀·수치·날짜·파일 경로는 본문 사례의 값이다. 조직의 값으로 교체한다.</li>
+<li>양식의 항목은 늘리기보다 줄이는 편이 낫다. 본문의 notihub에서는 예외 신청서가
+  번거로워 구성원이 개인 설정으로 우회했고, 양식을 절반으로 줄인 뒤에야 신청
+  기록이 실제 사용을 반영하게 되었다(17.3.2).</li>
+<li>05·06·07은 저장소에 커밋되는 파일이므로 개정 이력이 Git에 남는다. 표준 수정은
+  7.5.2의 거버넌스(제안·검토·반영)를 따른다.</li>
+</ul></div></section><section class="panel" id="s02" data-title="02 파일럿 기준 문서 양식"><div class="doc"><h1 id="_1">파일럿 기준 문서 양식</h1>
+<p>파일럿의 성패는 도구가 아니라 <strong>시작 전에 무엇을 확정했는가</strong>에 따라 결정된다.
+성공 기준이 없으면 결과에 따라 기준이 바뀐다. 실패 기준이 없으면 성과가 불분명한
+상황에서 "조금 더 써 보자"는 결정이 반복되고, 파일럿이 끝나지 않은 채 사실상 정식
+도입으로 이어진다(본문 6.1.2). 이 문서는 팀·기간·범위·성공 기준·실패 기준·측정 방법을 파일럿 시작
+전에 한 장으로 고정하고, 종료 시점에 같은 문서로 판정하기 위한 양식이다.</p>
+<h2 id="611">작성 전에 정할 것: 파일럿 팀 선정 (6.1.1)</h2>
+<p>기준 문서를 쓰기 전에 팀이 관찰에 적합한지 먼저 확인한다. 부적합 조건에서 시작하면
+도구의 효과와 환경의 문제를 구분할 수 없다.</p>
+<table>
+<thead>
+<tr>
+<th>기준</th>
+<th>적합</th>
+<th>부적합</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규모</td>
+<td>개발자 3~8인</td>
+<td>1~2인, 15인 이상</td>
+<td>너무 적으면 개인 습관과 도구 효과가 섞이고, 너무 많으면 관찰의 질이 떨어진다</td>
+</tr>
+<tr>
+<td>코드베이스</td>
+<td>테스트가 있고 배포가 자동화된 저장소</td>
+<td>검증 수단이 없는 저장소</td>
+<td>산출물의 품질을 기존 공정 안에서 확인할 수 있어야 한다</td>
+</tr>
+<tr>
+<td>의지</td>
+<td>자원자가 있고 리더가 참여 시간을 승인한 팀</td>
+<td>지명으로 차출된 팀</td>
+<td>자원한 팀이 실패 사례까지 공유한다. 회의적인 구성원 한둘은 오히려 유익하다</td>
+</tr>
+<tr>
+<td>일정</td>
+<td>통상 업무 기간</td>
+<td>대형 릴리스 직전, 비상 대응 중</td>
+<td>여유가 없으면 도구를 사용하지 않은 것과 사용할 수 없었던 것을 구분할 수 없다</td>
+</tr>
+</tbody>
+</table>
+<p>기간은 4~8주가 적절하다. 첫 주는 설치·인증·기본 사용에 쓰이므로 4주 미만이면
+학습 과정만 측정하게 된다. 기간이 너무 길면 임시 실험이 상시 운영으로 굳어진다.</p>
+<h2 id="_2">양식</h2>
+<div class="w" data-w="formcode" data-key="s02"></div>
+
+<h2 id="_3">항목별 작성 지침</h2>
+<p><strong>성공 기준은 세 종류를 모두 둔다(6.1.2).</strong> 채택 지표는 다른 지표를 해석하기 위한
+전제다. 채택률이 낮으면 산출물이 개선되었더라도 충분한 사용 경험을 확보한 것이
+아니다. 산출 지표는 속도와 품질을 함께 본다. PR 수가 늘었는데 반려율과 결함률도
+늘었다면 생산성 향상이 아니라 검증 공백의 확대다. 체감 지표는 주간 설문 한두 문항
+("이번 주 에이전트가 시간을 절약하는 데 도움이 되었는가", "다음 프로젝트에서도
+계속 사용하겠는가")이면 충분하다. 이 응답은 도구가 실제 업무에 정착할 가능성을
+나타낸다.</p>
+<p><strong>실패 기준은 성공 기준과 같은 날 정한다.</strong> 세 가지 유형이 표준이다. 사용 정착
+실패는 4주 차 이후 활성 비율이 절반 아래로 떨어지고 회복되지 않는 경우다. 품질
+악화는 속도가 올랐더라도 확산을 멈추는 사유가 된다. 보안 차단은 기술적 성과와
+무관하게 종료 사유다. 실패로 판정되면 계약을 정리하고 관찰 기록을 남긴 뒤 종료한다.
+실패의 원인과 조건은 다음 파일럿의 설계 자료이므로, 실패도 파일럿의 중요한 결과다.</p>
+<p><strong>측정 방법은 시작 전에 확정한다.</strong> 착수→병합 시간과 반려율은 저장소와 이슈
+트래커에서, 사용량은 조직의 관리 화면에서 수집한다. 파일럿에서는 이 정도의 단순한
+수집 체계로 충분하다. 상시 측정 체계로의 확장은 17장의 문제다.</p>
+<p><strong>지표를 개인 평가와 분리한다는 문장은 형식이 아니다.</strong> 지표가 평가에 쓰인다는
+인식이 생기면 채택률과 산출 수치가 왜곡된다. 그 결과 파일럿은 도구를 관찰하는
+실험에서 성과를 보여 주는 수단으로 변질된다.</p>
+<h2 id="paylog">작성 예 (본문 paylog 팀)</h2>
+<pre><code class="language-markdown"># 파일럿 기준 (작성일: 2026-08-20)
+
+## 대상과 기간
+- 팀: 결제 서비스팀(개발자 5명)
+- 저장소: paylog
+- 기간: 2026-09-01 ~ 2026-10-12 (6주)
+- 제외 범위: 운영 데이터베이스 접근, 배포 조작
+
+## 성공 기준 (모두 충족하면 확산 제안)
+- 채택: 주간 활성 사용 80% 이상 유지
+- 산출: 착수부터 병합까지 걸리는 시간 20% 단축
+- 품질: PR 반려율과 결함 발생률이 나빠지지 않을 것
+- 체감: &quot;계속 사용하겠다&quot; 응답 70% 이상
+
+## 실패 기준 (하나라도 해당하면 종료)
+- 4주 차 이후 주간 활성 사용 50% 미만이 2주 연속
+- 결함 발생률이 뚜렷하게 증가하고 원인이 도구로 좁혀짐
+- 보안 검토에서 해소할 수 없는 차단 사유 확인
+
+## 측정과 판정
+- 측정: 매주 금요일, 운영 책임자가 기록
+- 판정: 5~6주 차 데이터를 기준으로 결정
+- 지표는 판정에만 사용하고 개인 평가와 분리한다
+</code></pre>
+<p>수치는 조직마다 다르게 정해도 되지만 구조는 같다. 채택을 확인하고, 속도와 품질을
+함께 측정하고, 사용자 수용도를 확인한다. 제외 범위에 배포와 운영 DB를 넣은 것은
+6.4.2의 실행 범위 통제와 같은 원칙이다. 이 기록은 보안 검토 답변(03)에서 "현재
+이 범위에서 이렇게 통제하고 있다"고 서술하는 근거가 된다.</p>
+<div class="w" data-w="pilot02"></div>
+
+<h2 id="_4">판정 시 점검</h2>
+<ul>
+<li class="task"><span class="box"></span>성공 기준 네 항목의 실측값이 모두 기록되어 있는가(하나라도 미측정이면 판정을 미루지 말고 "측정 실패"로 기록한다)</li>
+<li class="task"><span class="box"></span>산출 지표에서 속도 향상이 품질 악화와 동반되지 않았는가</li>
+<li class="task"><span class="box"></span>실패 기준 셋 중 어느 것도 발동하지 않았는가</li>
+<li class="task"><span class="box"></span>판정 결과와 근거를 확산 일정(6.1.3)의 첫 판정 지점 기록으로 남겼는가</li>
+</ul></div></section><section class="panel" id="s03" data-title="03 보안 검토 답변 양식"><div class="doc"><h1 id="_1">보안 검토 답변 양식</h1>
+<p>보안 검토에서 가장 먼저 나오는 질문은 "우리 코드가 모델 학습에 사용되는가"다. 이
+질문에 예·아니오로 답하려 하면 논의가 정리되지 않는다. 답은 <strong>어떤 계약과 사용
+환경으로 서비스를 쓰는지</strong>에 따라 달라지기 때문이다(본문 6.4.1). 이 양식은 막연한 질문
+("AI에 코드를 넣어도 되는가")을 검토 가능한 질문("어떤 데이터를 어떤 조건에서 쓸 수
+있는가")으로 바꾸는 회신 문서다. 보안팀·법무팀이 그대로 검토할 수 있도록 근거
+문서와 확인일을 항목마다 붙인다.</p>
+<h2 id="_2">언제, 누가 쓰는가</h2>
+<ul>
+<li>시점: 파일럿 시작 전. 보안 검토가 도입 막바지에 일정을 멈추는 일(표 B.7 "도입
+  막바지에 보안 검토로 일정이 중단된다")을 막기 위해 기술 담당이 먼저 작성해 제출한다.</li>
+<li>작성: 기술 담당(리드 또는 파일럿 운영자). 검토: 보안팀·법무팀.</li>
+<li>파일럿 기준 문서(02)의 제외 범위와 대응한다. 02에서 배포·운영 DB를 제외했다면
+  이 문서 "승인 요청 범위"의 금지 항목과 일치해야 한다.</li>
+</ul>
+<h2 id="_3">양식</h2>
+<div class="w" data-w="formcode" data-key="s03"></div>
+
+<h2 id="_4">항목별 작성 지침</h2>
+<p><strong>1. 계약과 적용 정책.</strong> 소비자용 Free·Pro·Max는 옵트아웃 방식이므로 설정을 끄지
+않으면 세션이 모델 개선에 사용될 수 있다. Team·Enterprise·API 같은 상용 서비스는
+고객 콘텐츠를 학습에 쓰지 않는 것이 기본이다(6.4.1). 따라서 첫 항목은 "우리는 어떤
+계약으로 쓰는가"다. 개인 구독으로 업무에 쓰는 구성원이 있다면 그 자체가 별개의
+위험이므로 6.3.1의 사용 현황 목록과 대조한다. 보존은 학습과 별개의 질문이다.
+학습에 쓰이지 않아도 즉시 삭제되는 것은 아니므로, 적용 보존 정책과 조정 가능 여부
+(Enterprise의 사용자 지정 보존 기간, 적격 계정의 ZDR)를 따로 적는다. 근거 문서와
+확인일을 붙이는 이유는 정책이 바뀌기 때문이다. 확인일이 없는 답변은 검토가 끝난
+뒤의 유효 기간을 확인할 수 없다.</p>
+<p><strong>2. 데이터 범위.</strong> 검토 대상은 소스 코드만이 아니다. 대화, 프로젝트 데이터, 연결된
+외부 데이터(MCP), 사용량·관리 정보까지 서비스 과정에서 처리되는 정보의 종류를
+적는다. 차단 대상에는 이미 훅과 권한 규칙으로 막고 있는 경로(paylog의 .env 보호
+훅 같은 실제 설정)를 예시로 제시하면 설득력이 높아진다.</p>
+<p><strong>3. 기술 통제.</strong> "유출되지 않는다"고 단정하는 대신 에이전트가 어디까지 접근하고
+무엇을 실행할 수 있는지를 통제 수단으로 설명한다(6.4.2). 정리 기준은 네 가지 축이다.
+접근 범위(permissions.deny와 훅으로 민감 경로 차단), 실행 범위(권한 모드와
+샌드박스, 파일럿 범위에서 배포·운영 DB 제외), 통신 범위(네트워크 정책, 필요하면
+클라우드 경로로 기존 클라우드의 경계 안에 배치), 정책의 강제(구성원이 임의로 해제할
+수 없는 관리 정책 계층)를 각각 적는다. 파일럿 전에 경계를 정해 두었다면 "앞으로
+통제하겠다"가 아니라 "현재 이 범위에서 이렇게 통제하고 있다"고 서술한다.</p>
+<p><strong>4. 계약 통제.</strong> 데이터 처리 부속서(DPA)는 개인정보와 고객 데이터의 처리 관계를
+계약상으로 명확히 하는 기본 문서다. 이 항목에서 보존 조건, 감사 지원, 데이터 처리
+위치를 확인한다. 규제 요건이 있는 조직은 컴플라이언스 인증과 처리 위치를 확인하고,
+필요하면 클라우드 경로(6.2.1)로 기존 클라우드의 보안·네트워크 정책을 그대로
+적용한다. 기술 담당은 법무팀과 보안팀이 바로 검토하도록 확인 항목을 먼저 정리하는
+역할을 한다.</p>
+<p><strong>5. 승인 요청 범위.</strong> 이 문서의 결론은 승인 여부가 아니라 <strong>사용 경계의 명문화</strong>다.
+어떤 계정으로, 어떤 저장소에서, 어떤 데이터까지, 어떤 권한과 네트워크 통제 아래
+쓸 수 있는지를 허용·조건부 허용·금지로 나눠 적는다. 경계가 문서로 있으면 이후 논의는
+"AI 도구를 써도 되는가"에서 "현재 경계를 어떻게 조정할 것인가"로 바뀐다.</p>
+<h2 id="paylog">작성 예 (본문 paylog 팀의 항목 구성)</h2>
+<pre><code class="language-markdown">## 1. 계약과 적용 정책
+- 계약 유형: Team
+- 학습 사용: 상용 계약 기준 미사용 (상용 이용약관 §X, 2026-08-20 확인)
+- 보존: 서비스 표준 보존 정책 (개인정보 처리방침, 2026-08-20 확인)
+
+## 2. 데이터 범위
+- 사용 저장소: paylog
+- 차단 대상: .env 계열, 자격 증명 파일, dist/ 생성 코드
+- 외부 전송: Jira MCP(이슈 조회·생성)
+
+## 3. 기술 통제
+- 권한: 기본 default, 파일 편집·명령 실행에 승인 요구
+- 차단: .env 읽기·쓰기(훅 protect_env.py), 운영 DB 접속 명령(permissions.deny)
+- 배포: 관리 정책 파일 미적용(파일럿 단계, 확산 시 적용 예정)
+
+## 5. 승인 요청 범위
+- 허용: paylog 저장소에서의 개발 작업
+- 조건부 허용: 고객 데이터가 포함된 저장소(별도 승인 후)
+- 금지: 운영 데이터베이스 접근, 배포 조작
+</code></pre>
+<p>근거 문서의 조항 번호와 확인일은 실제 값으로 채운다. 위 예의 조항 표기는 자리
+표시자다.</p>
+<h2 id="_5">제출 전 점검</h2>
+<ul>
+<li class="task"><span class="box"></span>1번의 학습·보존 항목에 근거 문서와 확인일이 모두 붙어 있는가</li>
+<li class="task"><span class="box"></span>2번의 차단 대상이 3번의 차단 수단(훅·권한 규칙)과 대응하는가(선언만 있고 수단이 없는 항목은 없는가)</li>
+<li class="task"><span class="box"></span>5번의 금지 항목이 파일럿 기준 문서(02)의 제외 범위와 일치하는가</li>
+<li class="task"><span class="box"></span>개인 구독으로 업무에 쓰는 구성원이 있다면 그 사실과 통일 계획을 적었는가</li>
+<li class="task"><span class="box"></span>도입 후 경계가 지켜지는지 확인할 운영 수단(14장의 로그, 공급망 관리, 사고 대응)을 후속 과제로 명시했는가</li>
+</ul></div></section><section class="panel" id="s04" data-title="04 팀 실행 예외 신청서"><div class="doc"><h1 id="_1">팀 실행 예외 신청서</h1>
+<p>에이전트 팀(멀티에이전트) 실행은 단일 세션보다 토큰 비용이 몇 배로 늘어난다.
+사람의 감독 시간이 추가되고 조율 실패의 위험도 커진다. 따라서 팀 실행은 표준
+사용이 아니라 <strong>사유와 기간을 남기는 예외</strong>로 시작한다. 손익이 검증된 작업
+유형부터 표준으로 전환한다(본문 15.2.1, 13.3.1). 이 양식은 그 손익 계산을 절차로
+고정한 것이다.</p>
+<h2 id="_2">판단의 기준: 손익 부등식</h2>
+<p>팀 실행이 정당화되는 조건은 다음 부등식 하나로 정리된다.</p>
+<blockquote>
+<p>시간 가치 + 품질 이득 &gt; 토큰 비용 + 조율 실패 비용 + 검토 비용 + 감독 비용</p>
+</blockquote>
+<p>좌변을 채울 때 흔히 저지르는 과대평가가 두 가지 있다. 첫째, <strong>시간 가치는 줄인
+시간의 길이가 아니다.</strong> 장애 조사처럼 지연이 곧 손실인 작업은 한 시간의 값이 크다.
+마감에 여유가 있는 백로그 작업은 같은 한 시간을 줄여도 값이 작다. 둘째, <strong>품질
+이득은 기존 공정에 추가되는 발견만 계산한다.</strong> 게이트(9장)와 단일 리뷰어(11장)가
+이미 발견했을 결함은 팀의 이득으로 계산하지 않는다. 우변에서는 <strong>감독 시간을
+빠뜨리기 쉽다.</strong> 팀이 세 시간에 작업을 완료했더라도 사람이 그 세 시간 동안
+감독했다면 절약된 시간을 전부 이득으로 볼 수 없다.</p>
+<hr />
+<div class="w" data-w="calc04"></div>
+
+<h2 id="_3">신청서</h2>
+<div class="w" data-w="head04"></div>
+
+<h3 id="1">1. 작업과 분해 계획</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대상 작업</td>
+<td></td>
+</tr>
+<tr>
+<td>태스크 목록(건수)</td>
+<td></td>
+</tr>
+<tr>
+<td>팀원별 파일 소유 분할</td>
+<td></td>
+</tr>
+<tr>
+<td>팀원 간 통신이 필요한 이유</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>마지막 행이 비어 있으면 팀 실행이 아니라 서브에이전트나 병렬 세션이 적합하다.
+결과만 취합하면 되는 작업은 팀원 간 통신이 필요하지 않다.</p>
+<h3 id="2">2. 예상 시간 이득과 그 가치</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 세션 기준 예상 소요</td>
+<td></td>
+</tr>
+<tr>
+<td>팀 실행 기준 예상 소요</td>
+<td></td>
+</tr>
+<tr>
+<td>단축되는 시간</td>
+<td></td>
+</tr>
+<tr>
+<td>그 단축이 만드는 가치</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>"가치" 칸에는 시간이 아니라 결과를 적는다. 출시 일정 확보, 장애 지속 시간 단축,
+의존 팀의 대기 해소처럼 조직이 실제로 얻는 것이어야 한다.</p>
+<h3 id="3">3. 예상 토큰 비용과 팀원 구성</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>리드 모델 등급 / 수</td>
+<td></td>
+</tr>
+<tr>
+<td>팀원 모델 등급 / 수</td>
+<td></td>
+</tr>
+<tr>
+<td>단일 세션 대비 예상 비용 배수</td>
+<td></td>
+</tr>
+<tr>
+<td>예산 상한(토큰 또는 금액)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>리드에는 상위 등급, 배분된 작업을 수행하는 팀원에는 균형 등급을 두는 것이
+기본 배정이다(표 13.5). 작업을 마친 팀원은 즉시 종료한다.</p>
+<h3 id="4">4. 조율 위험에 대한 평가</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>파일 충돌 가능성(공유 파일 유무)</td>
+<td></td>
+</tr>
+<tr>
+<td>의존 대기 가능성(태스크 간 순서 의존)</td>
+<td></td>
+</tr>
+<tr>
+<td>대응 방법</td>
+<td></td>
+</tr>
+<tr>
+<td>감독 담당자와 예상 감독 시간</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="5">5. 판정</h3>
+<ul>
+<li class="task"><span class="box"></span>팀원 간 통신이 결과의 품질을 실제로 높이는 작업이다</li>
+<li class="task"><span class="box"></span>파일 소유권을 분리할 수 있다</li>
+<li class="task"><span class="box"></span>병렬 실행의 이득 합이 추가 비용을 충분히 넘어선다(부등식 성립)</li>
+</ul>
+<p>세 조건 가운데 하나라도 충족되지 않으면 승인하지 않고 더 저렴한 대안을 지정한다.
+순차 의존이 강하면 계획을 충분히 갖춘 단일 세션, 결과만 필요하면 서브에이전트,
+독립 작업이면 병렬 세션이 대안이다(그림 15.2).</p>
+<h3 id="6">6. 실행 후 실측 기록 (회고 시 작성)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>예상</th>
+<th>실측</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>소요 시간</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>토큰 비용(배수)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>감독 시간</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>기존 공정이 놓쳤을 발견의 수</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>조율 실패(충돌·대기) 발생</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>실측이 예상보다 나쁜 항목이 있으면 그 원인을 한 줄로 남긴다. 같은 작업 유형의
+신청이 세 차례 이상 손익을 충족하면 예외가 아닌 표준 사용으로 전환을 검토한다.</p>
+<hr />
+<h2 id="notihub">작성 예 (본문 notihub 사례)</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>작성 예</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>작업과 분해 계획</td>
+<td>알림 채널 추가. 태스크 12건, 팀원 3명, 채널별 디렉터리 분담. 채널 간 공통 인터페이스 합의가 필요해 통신이 필요함</td>
+</tr>
+<tr>
+<td>예상 시간 이득과 가치</td>
+<td>이틀 단축. 출시 일정의 여유 확보</td>
+</tr>
+<tr>
+<td>예상 토큰 비용과 구성</td>
+<td>리드 상위 1, 팀원 균형 3. 단일 세션 대비 약 5배</td>
+</tr>
+<tr>
+<td>조율 위험 평가</td>
+<td>파일 소유 분리 완료, 공유 파일 없음. 감독 담당 1인, 착수·통합 시점에 각 30분</td>
+</tr>
+</tbody>
+</table>
+<p>반대 방향의 사례도 있다. notihub의 중복 발송 버그는 단일 세션으로 사흘 동안
+원인을 찾지 못했다. 네 가지 독립 가설(스케줄러 경합, 캐시 불일치, 시간대 처리,
+발송 API 응답 순서)을 팀으로 병렬 검증하자 반나절 만에 원인이 좁혀졌다. 한 팀원의
+발견이 다른 가설을 반박한 결과다. 이 사례는 시간 가치가 큰 장애 조사에서 팀원 간
+통신이 품질을 높인 경우이자, 부등식이 성립하는 전형적인 예다.</p></div></section><section class="panel" id="s05" data-title="05 팀 공통 CLAUDE.md 예시와 작성 지침"><div class="doc"><h1 id="claudemd">팀 공통 CLAUDE.md 예시와 작성 지침</h1>
+<p>팀 공통 CLAUDE.md는 저장소를 여는 모든 세션이 시작할 때 읽는 규칙 파일이다. 수록
+항목은 두 질문으로 판단한다. <strong>팀 전원에게 적용되는가? 세션마다 필요한가?</strong> 두 조건을
+모두 충족하는 항목만 남긴다(본문 7.1.1). 개인 파일(4.1.1)에서 적용하던 빈도와
+지속성 기준에 더해, 팀 파일에서는 공통성이 결정적 기준이 된다.</p>
+<p>이 문서는 본문 예제 7.1(notihub 팀의 실제 파일)을 원문 그대로 싣는다. 이어서 각 절이
+그 자리에 있는 이유와 자기 팀에 맞출 때 변경할 항목을 해설한다.</p>
+<h2 id="notihubclaudemd">예시 원문 (notihub/CLAUDE.md)</h2>
+<pre><code class="language-markdown"># notihub
+
+사내 알림 서비스 모노레포. 각 팀의 시스템에서 이벤트를 받아
+슬랙·이메일·웹훅 채널로 알림을 발송한다.
+
+## 구조
+- services/api — 알림 API와 발송 파이프라인. 발송 로직의 진실 원천
+- services/web — 관리 콘솔 (React)
+- packages/shared — 공용 타입과 알림 템플릿 엔진
+
+## 명령
+- 명령은 각 작업 공간 디렉터리에서 실행한다 (예: services/api에서 pnpm test)
+- 전체 타입 검사는 루트에서 pnpm -r check (커밋 전 훅이 자동 실행)
+
+## 계약
+- 발송 규칙(재시도·중복 제거)을 다루는 코드는 specs/delivery-contract.md를 따른다
+- 발송 파이프라인의 세부 관례는 services/api/CLAUDE.md를 따른다
+
+## 작업 규약
+- 커밋 첫 줄은 &quot;영역: 변경 요약&quot; 형식 (예: api: 재시도 간격 상한 추가)
+- 리뷰는 /review, 커밋은 /commit을 사용한다
+- 계획 검토가 의무인 작업 유형은 docs/policies/permissions.md를 따른다
+
+## 금지
+- 운영 발송 채널 호출 금지 (훅으로 차단됨) — 테스트는 샌드박스 채널 사용
+- .env 계열 파일은 읽지 않는다 (권한 규칙으로 차단됨)
+</code></pre>
+<p>전체가 스무 줄 남짓이다. 분량이 짧은 것은 의도된 구성이다. 이 파일은 모든 세션의
+시작 컨텍스트에 실리므로(2.6, 4.3), 한 줄이 늘면 팀 전체의 모든 세션이 그만큼을
+매번 읽는다.</p>
+<h2 id="_1">절별 해설</h2>
+<p><strong>머리말(무엇을 만드는가)</strong> — 두 문장으로 쓴다. 에이전트가 저장소의 목적을 알아야
+판단의 방향이 잡힌다. 배경 설명이나 역사는 넣지 않는다.</p>
+<p><strong>구조</strong> — 디렉터리 자체가 아니라 <strong>디렉터리의 역할</strong>을 적는다. "발송 로직의 진실
+원천"처럼 어디가 기준인지 밝히는 한 구절이 에이전트의 탐색 순서를 결정한다. 디렉터리
+목록 전체를 나열하는 것은 파생 가능한 정보(에이전트가 읽어서 알 수 있는 것)이므로
+넣지 않는다(4.1.2, /doctor가 지적하는 항목).</p>
+<p><strong>명령</strong> — 실행 위치와 검사 명령을 적는다. "커밋 전 훅이 자동 실행"처럼 사람이 직접
+수행하지 않아도 되는 항목을 밝혀 두면 에이전트가 불필요한 명령을 반복하지 않는다.
+이 절은 실제 저장소의 스크립트와 문자 단위로 일치해야 한다. 명령 한 줄이 어긋나면
+세션마다 실패가 발생한다.</p>
+<p><strong>계약</strong> — 팀 파일에서 가장 중요한 절이다. 여러 사람이 동시에 에이전트를 사용하면
+세션마다 다른 가정으로 코드가 작성된다. 계약 문서의 위치를 여기에 한 줄로 고정하면
+어느 구성원의 세션이든 같은 계약을 참조한다(7.1.1). 지시할 때마다 계약을 언급하는
+방식은 기억에 의존하므로 일관성이 깨진다. 하위 디렉터리의 CLAUDE.md로 세부 관례를
+위임하는 줄도 여기 둔다. 루트에는 방향을 두고, 세부 관례는 작업 영역에 가까운 파일에
+둔다(4.2.1).</p>
+<p><strong>작업 규약</strong> — 커밋 형식, 사용할 커맨드, 계획 검토 의무 작업을 적는다. 세부 판정
+기준은 정책 문서(06)에 두고 여기서는 위치만 가리킨다. 규약 전체를 여기에 적으면
+파일이 길어지고, 정책이 바뀔 때 두 곳을 수정해야 한다.</p>
+<p><strong>금지</strong> — 각 항목 뒤에 붙은 "(훅으로 차단됨)", "(권한 규칙으로 차단됨)" 같은 괄호가
+핵심이다. CLAUDE.md는 지침을 제공하는 계층이지 실행을 보장하는 계층이 아니다(7.1.1).
+컨텍스트가 압축되거나 지침이 누락되어도 반드시 지켜져야 하는 규칙은 훅·권한 규칙으로
+강제하고, 여기에는 그 사실을 알린다. 문서에만 있는 금지는 권고에 그친다.</p>
+<h2 id="_2">자기 팀에 맞출 때 바꾸는 것</h2>
+<table>
+<thead>
+<tr>
+<th>절</th>
+<th>그대로 두는 것</th>
+<th>팀에 맞춰 바꾸는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>머리말</td>
+<td>두 문장 분량</td>
+<td>서비스 설명</td>
+</tr>
+<tr>
+<td>구조</td>
+<td>"역할"을 적는 방식</td>
+<td>작업 공간과 진실 원천의 위치</td>
+</tr>
+<tr>
+<td>명령</td>
+<td>실행 위치·검사 명령·자동 실행 표시</td>
+<td>패키지 관리자와 스크립트 이름</td>
+</tr>
+<tr>
+<td>계약</td>
+<td>계약 문서를 한 줄로 가리키는 구조</td>
+<td>계약 문서의 경로(없다면 9.2에서 먼저 만든다)</td>
+</tr>
+<tr>
+<td>작업 규약</td>
+<td>커맨드 이름, 정책 문서 위임</td>
+<td>커밋 형식</td>
+</tr>
+<tr>
+<td>금지</td>
+<td>강제 수단을 괄호로 밝히는 방식</td>
+<td>금지 항목과 그 강제 수단</td>
+</tr>
+</tbody>
+</table>
+<h2 id="711">넣지 말아야 할 것 (7.1.1)</h2>
+<ul>
+<li><strong>개인의 취향</strong>: "응답은 간결하게", "설명보다 코드 먼저"는 작업 방식의 선호다.
+  팀 파일에 넣으면 다른 구성원의 방식과 충돌한다. <code>~/.claude/CLAUDE.md</code>에 둔다.</li>
+<li><strong>수명이 끝난 규칙</strong>: 마이그레이션이 끝난 뒤의 "구 API 금지", 담당자가 바뀐 뒤의
+  "배포 전 OOO에게 확인"은 에이전트를 잘못된 방향으로 이끌고 컨텍스트만 차지한다.</li>
+<li><strong>시스템으로 강제해야 하는 규칙</strong>: "프로덕션 DB에 접속하지 않는다"는 문서가 아니라
+  권한 정책이나 훅으로 차단해야 한다. 문서에는 강제된 사실만 알린다.</li>
+</ul>
+<h2 id="_3">초안을 만드는 방법</h2>
+<p>구성원들의 기존 개인 CLAUDE.md에서 공통 항목을 추출한다. 여러 사람에게 반복해서
+등장하는 규칙을 후보로 모은 뒤, 두 질문(전원 적용? 세션마다 필요?)으로 거른다. 여러
+사람이 독립적으로 같은 지침을 작성했다면 그 규칙은 팀 전체에 해당하는 사실이다.
+파일럿을 거친 조직은 파일럿 팀의 파일을 출발점으로 삼되 개인 취향·낡은 규칙·강제
+규칙을 제거한다.</p>
+<h2 id="_4">점검</h2>
+<ul>
+<li class="task"><span class="box"></span>각 줄이 두 질문(팀 전원에게 적용되는가, 세션마다 필요한가)을 통과하는가</li>
+<li class="task"><span class="box"></span>명령 절의 명령이 실제 저장소에서 그대로 실행되는가</li>
+<li class="task"><span class="box"></span>계약 문서의 경로가 실재하며, 계약 문서에 메타 정보·결정·불변식·인터페이스·이유·변경 절차가 있는가(표 9.2)</li>
+<li class="task"><span class="box"></span>금지 항목마다 강제 수단(훅·권한 규칙)이 실재하는가(없다면 "금지"가 아니라 "권고"로 옮긴다)</li>
+<li class="task"><span class="box"></span>개정 절차가 정해져 있는가(7.5.2). 이 파일의 수정은 CODEOWNERS로 리뷰어를 지정한다</li>
+</ul></div></section><section class="panel" id="s06" data-title="06 권한 정책 문서 예시와 작성 지침"><div class="doc"><h1 id="_1">권한 정책 문서 예시와 작성 지침</h1>
+<p>권한 규칙이 개별 도구 호출의 경계를 정한다면, 권한 모드는 세션 전체의 실행 방식을
+정한다. 팀 정책은 이를 한 단계 확장해 <strong>어떤 작업에 어떤 모드를 적용할 것인지</strong>를
+정하는 문서다(본문 7.3.2). 모드 선택의 기준은 작업의 위험도가 아니라 <strong>검증 체계의
+구조</strong>다. 산출물이 테스트와 자동 검증으로 충분히 확인되는 작업은 승인 빈도를 낮춰도
+안전하다. 반면 검증이 사람의 판단에 의존하는 작업에서는 승인 자체가 검증 지점이므로,
+승인을 줄이는 것이 곧 검증 수준의 저하다. 권한 수준은 리뷰와 테스트가 제공하는 검증
+강도에 맞춘다(2.7.2).</p>
+<h2 id="notihubdocspoliciespermissionsmd">예시 원문 (notihub/docs/policies/permissions.md)</h2>
+<pre><code class="language-markdown"># 권한 정책
+
+## 기본 모드
+- 이 저장소의 기본 모드는 acceptEdits다 (.claude/settings.json에 설정됨)
+- 근거: 전 패키지에 테스트가 있고 커밋 전 검증 훅이 있다
+
+## 계획 검토가 의무인 작업
+다음 작업은 플랜 모드로 시작하고, 계획 승인 후 구현한다.
+- 저장 형식(스키마·마이그레이션)이 바뀌는 작업
+- 공개 API의 추가·변경·삭제
+- 발송 파이프라인(services/api/src/dispatch/)의 변경
+- 세 개 이상의 작업 공간을 가로지르는 리팩터링
+확인: 해당 유형의 PR은 본문에 계획 요약을 포함한다.
+
+## 우회 모드(bypassPermissions)의 사용 조건
+- 허용: 자격 증명과 운영 자원에서 격리된 컨테이너·CI 환경
+- 금지: 개발자 로컬 기기 (관리 설정으로 차단됨)
+- 거부 규칙은 우회 모드에서도 적용된다
+
+## 이 문서의 수정
+- .claude/ 경로와 같은 승인 절차를 따른다 (CODEOWNERS 참조)
+</code></pre>
+<h2 id="_2">절별 해설</h2>
+<p><strong>기본 모드와 근거</strong> — 모드만 적지 않고 근거를 적는 것이 이 문서의 핵심 형식이다.
+notihub가 acceptEdits를 기본으로 둔 이유는 "전 패키지에 테스트가 있고 커밋 전 검증
+훅이 있다"는 검증 체계에 있다. 근거가 사라지면, 즉 테스트가 없는 패키지가 생기면
+모드도 다시 판단해야 한다. 근거가 적혀 있어야 분기 점검에서 그 판단을 다시 수행한다.
+검증 수단이 부족한 레거시 저장소라면 승인 과정이 주요 검증 수단이므로 default를
+기본 모드로 둔다(표 7.7).</p>
+<p><strong>계획 검토가 의무인 작업</strong> — 3.1.3의 원리(계획의 가치는 변경을 되돌리는 비용에
+비례한다)를 개인의 감각이 아니라 <strong>작업 유형</strong>으로 구체화한 절이다. 네 유형은 데이터
+구조 변경, 공개 인터페이스 변경, 핵심 파이프라인 변경, 범위가 넓은 리팩터링이다.
+마지막 줄 "확인: 해당 유형의 PR은 본문에 계획 요약을 포함한다"가 중요하다. 플랜
+모드는 세션의 상태이므로 설정만으로 강제되지 않는다. 그래서 PR에서 계획의 존재를
+확인하는 방식으로 보완한다. 목적은 특정 모드의 강제가 아니라 되돌림 비용이 큰 작업에
+구현 전 검토 지점을 두는 것이다.</p>
+<p><strong>우회 모드의 사용 조건</strong> — 금지가 아니라 <strong>환경 제한</strong>이다. bypassPermissions는
+승인 프롬프트를 생략하므로 프롬프트 주입 방어가 약해진다(2.7.1). 따라서 자격 증명과
+운영 자원에서 격리된 컨테이너·CI에서만 허용하고, 로컬 기기에서는 관리 설정으로
+차단한다. "거부 규칙은 우회 모드에서도 적용된다"는 문장은 권한 모드와 안전 정책이
+다른 계층이라는 사실(2.7.2)을 구성원에게 알리는 역할을 한다.</p>
+<p><strong>이 문서의 수정</strong> — 정책 문서 자체가 표준이므로 수정에는 .claude/ 설정과 같은 승인
+절차를 적용한다(7.5.2). CODEOWNERS로 리뷰어를 지정해 두면 정책이 합의 없이 바뀌는
+일을 방지한다.</p>
+<h2 id="77">작업 상황별 권장 모드 (표 7.7)</h2>
+<p>자기 팀의 기본 모드와 예외를 정할 때 참고한다.</p>
+<table>
+<thead>
+<tr>
+<th>작업 상황</th>
+<th>권장 모드</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>일상 개발(테스트가 갖추어진 저장소)</td>
+<td>acceptEdits</td>
+<td>편집과 작업 디렉터리 안의 파일 명령은 자동 승인. 이탈은 테스트와 diff 검토로 검증</td>
+</tr>
+<tr>
+<td>코드베이스 조사·리뷰</td>
+<td>plan 또는 default</td>
+<td>변경보다 구조와 근거의 파악이 목적이므로 편집을 제한</td>
+</tr>
+<tr>
+<td>설계 변경·마이그레이션</td>
+<td>plan으로 시작</td>
+<td>되돌림 비용이 큰 변경의 검토 지점을 앞당김</td>
+</tr>
+<tr>
+<td>검증 수단이 부족한 레거시</td>
+<td>default</td>
+<td>승인 과정이 주요 검증 수단이므로 승인 수준을 유지</td>
+</tr>
+<tr>
+<td>프로덕션 인접 작업</td>
+<td>default + 거부 규칙</td>
+<td>권한 모드와 별개로 적용되는 거부 규칙을 추가</td>
+</tr>
+<tr>
+<td>격리 환경의 배치 작업</td>
+<td>bypassPermissions</td>
+<td>실행 환경의 격리를 전제로 자동 실행을 허용</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">자기 팀에 맞출 때</h2>
+<ol>
+<li><strong>기본 모드는 검증 체계에서 역산한다.</strong> 테스트 커버리지와 커밋 전 훅이 있는가를
+   먼저 확인하고, 그 사실을 근거 줄에 적는다. 근거를 적을 수 없으면 기본 모드는
+   default다.</li>
+<li><strong>계획 의무 작업은 저장소의 실제 경로로 적는다.</strong> "핵심 파이프라인"이라는 일반어
+   대신 notihub처럼 <code>services/api/src/dispatch/</code> 같은 경로를 명시해야 해당 여부에
+   이견이 생기지 않는다.</li>
+<li><strong>우회 모드의 허용 환경을 조직의 실제 CI·컨테이너 이름으로 적는다.</strong> 이어서 로컬
+   차단이 관리 설정(14.3.1)으로 실제로 배포되어 있는지 확인한다. 문서만 있고 설정이
+   없으면 이 절은 권고에 그친다.</li>
+<li><strong>CLAUDE.md의 작업 규약에는 이 문서의 위치만 남긴다</strong>(05). 판정 기준의 원본은
+   여기 한 곳이다.</li>
+</ol>
+<h2 id="_4">점검</h2>
+<ul>
+<li class="task"><span class="box"></span>기본 모드에 근거가 적혀 있고, 그 근거(테스트·훅)가 저장소에서 실제로 확인되는가</li>
+<li class="task"><span class="box"></span>계획 의무 작업이 경로·유형으로 판정 가능하게 적혀 있는가</li>
+<li class="task"><span class="box"></span>계획 의무 작업의 PR에 계획 요약을 요구하는 확인 절차가 PR 템플릿(07)이나 리뷰 규칙에 반영되어 있는가</li>
+<li class="task"><span class="box"></span>우회 모드의 로컬 차단이 관리 설정으로 배포되어 있는가</li>
+<li class="task"><span class="box"></span>이 문서의 수정 경로가 CODEOWNERS에 등록되어 있는가</li>
+<li class="task"><span class="box"></span>허용 목록(allow)이 늘어나기만 하고 줄지 않는 신호(자가 진단 B-9)를 분기마다 확인하는가</li>
+</ul></div></section><section class="panel" id="s07" data-title="07 PR 템플릿 예시와 작성 지침"><div class="doc"><h1 id="pr">PR 템플릿 예시와 작성 지침</h1>
+<p>에이전트가 만든 변경에서 가장 위험한 것은 코드에 드러나지 않는 <strong>가정</strong>이다. 본문
+9장의 minishop 사고에서 개발자 A의 세션은 "할인은 주문의 것", 개발자 B의 세션은
+"금액은 품목의 것"이라고 가정했다. 두 구현은 각자 테스트를 통과했으나, 결합한 뒤
+장부가 맞지 않았다. 가정은 코드에 기록되지 않은 조건을 진술한 것이므로 코드를
+분석해도 드러나지 않는다. 그래서 minishop 팀은 PR 템플릿에 <strong>가정 섹션을 강제로
+배치</strong>했다(9.3.3). 이 문서는 그 템플릿(예제 9.11)의 원문과 각 항목이 결합 전 검증에서
+맡는 역할을 설명한다.</p>
+<h2 id="minishopgithubpull_request_templatemd">예시 원문 (minishop/.github/pull_request_template.md)</h2>
+<pre><code class="language-markdown"># 변경 내용
+&lt;!-- 무엇을, 왜 바꿨는지 세 줄 이내로 --&gt;
+
+## 이 PR이 전제하는 것 (가정)
+&lt;!-- 코드에 드러나지 않는 가정을 모두 적는다. &quot;없음&quot;도 답이다.
+예: 할인은 품목 단위로 배분되어 있다 / 이 API는 재시도해도 안전하다 --&gt;
+
+## 결합 전 확인
+
+- [ ] 관련 계약·명세(specs/)를 확인했고 위반이 없다
+- [ ] 다른 팀원이 의존하는 인터페이스를 바꾸지 않았다 (바꿨다면 명세 변경을 포함했다)
+- [ ] 계약 테스트를 포함한 전체 테스트가 통과한다
+- [ ] 이 변경으로 영향받는 코드의 오너에게 리뷰를 요청했다
+</code></pre>
+<h2 id="_1">항목별 해설</h2>
+<p><strong>변경 내용(세 줄 이내)</strong> — 분량 제한 자체가 점검 역할을 한다. 한 PR의 변경을 세
+줄로 설명할 수 없다면 그 PR은 여러 관심사를 담고 있다. 이는 표 10.1의 분할 기준(한
+문장 설명 가능성)과 같은 판정이다. "왜"를 적게 한 이유는 에이전트가 작성한 커밋
+메시지가 무엇을 바꿨는지는 정확히 기록하지만 왜 바꿨는지는 담지 못하기 때문이다(10.3.1).</p>
+<p><strong>가정 섹션</strong> — 이 템플릿의 존재 이유다. 세 가지 설계가 들어 있다. 첫째, 제목이
+"전제하는 것"이므로 작성자가 코드 밖의 조건을 떠올린다. 둘째, <strong>"없음"도 답이다</strong>
+라는 문구로 빈칸을 허용하지 않는다. 빈칸으로는 "가정이 없다"와 "생각하지 않았다"를
+구분하지 못한다. "없음"이라고 적은 작성자는 최소한 한 번 자문한 것이다. 셋째, 예시
+두 개가 가정의 형태를 보여 준다. 할인 배분 단위는 데이터 모델에 관한 가정이고,
+재시도 안전성은 외부 동작에 관한 가정이다. 이 섹션은 기계가 대신 작성하지 못한다.
+결합 전 검증 체크리스트에서 자동화 열이 "불가능"인 유일한 항목이 가정 명시다. 그래서
+템플릿으로 강제한다.</p>
+<p><strong>결합 전 확인 네 항목</strong> — 네 항목의 순서에는 이유가 있다. 첫째 항목인 계약 확인은
+명세 부재를 방어한다. 둘째 항목인 인터페이스 변경 여부는 컨텍스트 불일치를 방어한다.
+셋째 항목인 계약 테스트 포함 전체 테스트는 자동 검증에 해당한다. 넷째 항목인 오너
+리뷰 요청은 CODEOWNERS로 지정된 사람이 계약의 변경을 승인하게 한다. 둘째 항목의 괄호
+"(바꿨다면 명세 변경을 포함했다)"는 인터페이스 변경을 금지하는 것이 아니라 <strong>명세와
+함께 변경한다</strong>는 규칙이다. 이 규칙은 병합 게이트(예제 9.12)가 pricing.py 변경 시
+specs/pricing-contract.md 변경을 요구하는 검사와 짝을 이룬다.</p>
+<h2 id="_2">게이트와의 관계</h2>
+<p>템플릿의 확인 항목 가운데 자동화가 가능한 항목은 CI 게이트로 옮겨 사람의 성실성에
+의존하지 않게 한다(9.3.3). minishop에서는 계약 테스트 실행과 명세 변경 동반 확인이
+게이트로 자동화되어 있고, 템플릿에는 그 결과를 확인했다는 체크만 남는다. 자동화된
+항목을 템플릿에서 지우지 않는 이유는 작성자가 결과를 한 번 확인하게 하려는 것이다.</p>
+<h2 id="_3">자기 팀에 맞출 때</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>그대로 두는 것</th>
+<th>바꾸는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>변경 내용</td>
+<td>분량 제한과 "왜" 요구</td>
+<td>줄 수(세 줄이 표준)</td>
+</tr>
+<tr>
+<td>가정 섹션</td>
+<td>제목, "없음"도 답이라는 문구, 예시 2개 형식</td>
+<td>예시를 자기 도메인의 가정으로(예: "이 잡은 하루 한 번만 실행된다")</td>
+</tr>
+<tr>
+<td>결합 전 확인</td>
+<td>네 항목의 순서</td>
+<td>명세 디렉터리 경로, 계약 테스트 이름</td>
+</tr>
+<tr>
+<td>추가</td>
+<td>—</td>
+<td>계획 의무 작업(06)에 해당하면 "계획 요약" 항목을 추가한다</td>
+</tr>
+</tbody>
+</table>
+<p>항목을 늘릴 때는 신중해야 한다. 체크리스트가 길어지면 형식적으로 전부 체크하는
+습관이 생겨 가정 섹션까지 빈칸이 된다. 본문의 계산으로는 체크리스트 10분 × PR 100건이
+이틀 남짓이고, 이틀짜리 사고 하나를 방지하면 상쇄된다. 항목을 추가하려면 그 항목이
+방지하는 사고가 무엇인지 설명할 수 있어야 한다.</p>
+<div class="w" data-w="calc07"></div>
+
+<h2 id="_4">운영 신호</h2>
+<ul>
+<li>가정 섹션에 "없음"만 반복되면 작성자가 가정을 점검하지 않은 것이다. 리뷰에서 "정말
+  없는가"를 한 번 되묻고, 반복되면 8.4의 공유회에서 가정을 찾는 연습을 다룬다.</li>
+<li>게이트 위반 수(9.3.3)와 함께 "가정 섹션이 비어 있던 PR에서 발생한 결함"을 집계하면
+  이 템플릿의 효과가 측정된다(17.1의 품질·표준 지표).</li>
+</ul>
+<h2 id="_5">점검</h2>
+<ul>
+<li class="task"><span class="box"></span>저장소의 <code>.github/pull_request_template.md</code>에 배치되어 PR 생성 시 자동으로 채워지는가</li>
+<li class="task"><span class="box"></span>가정 섹션의 예시가 자기 팀의 도메인 가정으로 바뀌어 있는가</li>
+<li class="task"><span class="box"></span>확인 항목의 경로·테스트 이름이 실제 저장소와 일치하는가</li>
+<li class="task"><span class="box"></span>자동화 가능한 항목이 CI 게이트로 옮겨져 있는가</li>
+<li class="task"><span class="box"></span>오너 리뷰 요청이 CODEOWNERS와 연결되어 실제로 리뷰어가 자동 지정되는가</li>
+</ul></div></section><section class="panel" id="s08" data-title="08 온보딩 문서 예시와 작성 지침"><div class="doc"><h1 id="_1">온보딩 문서 예시와 작성 지침</h1>
+<p>온보딩 문서의 독자가 둘이 되었다는 사실이 설계의 출발점이다. 신규 입사자는 혼자
+합류하지 않고 <strong>에이전트 세션과 함께 합류한다</strong>(본문 8.3.1). 사람에게 필요한 것은
+맥락(이 팀이 무엇을 만들고, 왜 이 구조를 택했으며, 무엇을 누구에게 물어야 하는가)이고,
+에이전트에게 필요한 것은 규칙(실행 명령, 작업 규약, 금지의 경계)이다. 한 문서로 두
+독자를 모두 충족하려 하면 어느 쪽에도 맞지 않는 문서가 된다.</p>
+<p>에이전트 층은 이미 완성되어 있다. 7장에서 만든 팀 CLAUDE.md(05), 권한
+정책(06), 훅과 설정이 그대로 세션의 온보딩 자료다. 입사 첫날의 세션과 3년 차의
+세션이 같은 표준을 적용받는다. 따라서 새로 설계할 대상은 <strong>사람을 위한 안내 층</strong>
+하나이고, 그 문서는 분량이 짧아야 한다.</p>
+<h2 id="notihubdocsonboardingmd">예시 원문 (notihub/docs/onboarding.md)</h2>
+<pre><code class="language-markdown"># notihub 온보딩 안내
+
+첫 주의 목표는 도구 사용법의 숙달이 아니라 팀의 작업 방식에
+접속하는 것이다. 규칙의 원본은 이 문서가 아니라 아래 파일들이다.
+이 문서는 읽는 순서와 물을 사람을 안내한다.
+
+## 먼저 읽을 것 (순서대로)
+1. CLAUDE.md — 저장소 구조, 명령, 작업 규약의 원본
+2. docs/policies/permissions.md — 권한 정책과 그 근거
+3. specs/delivery-contract.md — 발송 규칙의 계약
+
+## 환경 준비
+- 조직 계정으로 로그인한다 (개인 계정 금지)
+- 저장소를 열고 워크스페이스를 신뢰하면 팀 플러그인
+(notihub-kit@notihub-plugins) 설치가 제안된다. 수락한다
+
+## 누구에게 묻는가
+- 표준·규칙: @notihub/standards
+- 발송 도메인: services/api/CLAUDE.md 첫머리의 담당자
+- 답이 파일에 없었다면, 답을 들은 뒤 그 내용을 파일에
+반영하는 PR을 올린다. 이것이 이 팀의 질문 규약이다
+
+## 첫 주 과제
+- 3일 차: onboarding 라벨의 이슈에서 하나를 골라 첫 PR을 올린다
+- 5일 차: 이 문서를 포함해 온보딩 과정에서 낡았거나 틀린
+  내용을 고치는 PR을 올린다
+</code></pre>
+<h2 id="_2">절별 해설</h2>
+<p><strong>머리말</strong> — 첫 문장이 온보딩의 목표를 규정한다. 목표는 도구 사용법의 숙달이 아니라
+팀의 작업 방식에 접속하는 것이다. 둘째 문장은 이 문서의 성격을 규정한다. 이 문서는
+규칙의 원본이 아니라 <strong>위치 안내</strong>다. 이 선언이 있어야 뒤의 절들이 짧아진다.</p>
+<p><strong>먼저 읽을 것(순서대로)</strong> — 규칙의 내용을 옮겨 적지 않고 원본 파일을 순서대로
+가리킨다. 실행 명령과 커밋 형식은 CLAUDE.md에, 권한 정책은 정책 문서에, 도메인
+규칙은 계약 문서에 있다. 복사본을 담지 않으므로 원본이 바뀌어도 이 문서를 수정할
+필요가 없다(7.5.1의 참조 원칙). 온보딩 문서가 두 분기 전 구조를 설명하게 되는 문제는
+대부분 복사본 때문에 생긴다.</p>
+<p><strong>환경 준비</strong> — 조직 계정(개인 계정 금지)은 6.4.1의 데이터 정책과 직결된다. 개인
+구독으로 업무 저장소를 열면 데이터 처리 조건이 달라진다. 팀 플러그인은 워크스페이스
+신뢰 시 자동 제안(8.2.2)으로 갖춰지므로, 설치 절차를 적는 대신 "수락한다"만 남긴다.</p>
+<p><strong>누구에게 묻는가</strong> — 표준 담당과 도메인 담당을 분리한다. 마지막 줄이 이 문서에서
+가장 중요한 규칙이다. <strong>답이 파일에 없었다면, 답을 들은 뒤 그 내용을 파일에 반영하는
+PR을 올린다.</strong> 질문이 자산의 갱신으로 이어지는 순환이 여기서 시작된다. 이 규약이
+없으면 같은 질문이 입사자마다 반복된다. 규약이 있으면 신규 입사자가 문서의 빈틈을
+점검하는 역할을 한다.</p>
+<p><strong>첫 주 과제</strong> — 산출물로 확인한다(8.3.2의 원칙: 이해 여부를 묻지 않고 무엇을
+만들었는지 확인한다). 3일 차의 첫 PR은 onboarding 라벨 이슈, 즉 실제 백로그의 작은
+항목으로 수행하고 가상 과제를 만들지 않는다. 5일 차의 문서 개선 PR은 온보딩 과정에서
+발견한 낡은 내용을 고치는 과제다. 이 과제가 온보딩 문서를 갱신하는 장치 역할을 한다.</p>
+<h2 id="85">첫 주 커리큘럼 (표 8.5)</h2>
+<p>온보딩 문서는 위치만 안내하고, 일정은 운영자가 별도로 관리한다. 다음은 notihub의
+닷새 일정이다.</p>
+<table>
+<thead>
+<tr>
+<th>일차</th>
+<th>실습</th>
+<th>산출물</th>
+<th>확인하는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1일</td>
+<td>조직 계정 인증, 팀 플러그인 설치, 저장소 탐색 세션</td>
+<td>탐색 세션 기록</td>
+<td>환경이 팀 표준대로 갖춰졌는가</td>
+</tr>
+<tr>
+<td>2일</td>
+<td>CLAUDE.md·정책 문서 정독, 가드레일 차단 체험, 권한 모드 실습</td>
+<td>표준 요약과 질문 목록</td>
+<td>규칙과 그 근거를 연결해 이해했는가</td>
+</tr>
+<tr>
+<td>3일</td>
+<td>작은 이슈로 첫 수정, /notihub-kit:commit·/notihub-kit:review 사용, PR 제출</td>
+<td>첫 PR</td>
+<td>팀의 작업 절차를 따라 완주했는가</td>
+</tr>
+<tr>
+<td>4일</td>
+<td>계약 문서 기반 작업, 리뷰 대응, 병합</td>
+<td>병합된 PR</td>
+<td>계약과 리뷰 체계 안에서 작업했는가</td>
+</tr>
+<tr>
+<td>5일</td>
+<td>첫 주 회고, 온보딩 문서 개선 PR, 개인 CLAUDE.md 시작</td>
+<td>문서 개선 PR</td>
+<td>온보딩에서 나온 질문이 자산의 갱신으로 이어졌는가</td>
+</tr>
+</tbody>
+</table>
+<p>대상에 따라 조정한다. 에이전틱 코딩 경험자는 1·2일 차를 하루로 압축하고 4일 차 과제를
+확대한다. 첫 직장인 신입은 3일 차 앞에 짝 작업 반나절을 넣는다. 세 명 규모 팀이라면
+1·2일 차와 3·4일 차를 각각 하루로 합쳐 첫 PR이 병합된 PR에 흡수된 네 가지 산출물만
+유지하고 사흘로 줄여도 된다. 중요한 것은 일수가 아니라 산출물로
+확인하는 것이다. 2일 차의 권한 모드 실습은 같은 편집 요청을 default와 acceptEdits에서
+한 번씩 실행해 승인 프롬프트의 차이를 확인하는 방식으로 구성한다. 여기에 plan에서
+계획 단계에 멈추는 동작을 관찰하는 절차를 더하면 표 7.7이 암기 대상이 아니라 적용
+기준으로 읽힌다.</p>
+<h2 id="831">담을 것과 담지 않을 것 (8.3.1)</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>담는 것</td>
+<td>읽는 순서, 계정과 권한의 신청 경로, 도메인별 담당자, 첫 과제의 위치, 질문 규약</td>
+</tr>
+<tr>
+<td>담지 않는 것</td>
+<td>실행 명령과 커밋 형식(CLAUDE.md를 가리킨다), 권한 정책의 내용(정책 문서를 가리킨다)</td>
+</tr>
+<tr>
+<td>경계 사례</td>
+<td>팀의 결정 이력과 배경 설명이 길어지면 별도 문서로 분리하고 경로만 남긴다</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">자기 팀에 맞출 때</h2>
+<ul>
+<li>읽을 순서의 세 파일을 자기 저장소의 실제 경로로 바꾼다. 계약 문서가 없으면 그
+  줄을 지우지 말고 "(작성 중 — 9.2 참고)"로 남겨 빈자리를 드러낸다.</li>
+<li>담당자는 개인 이름보다 팀 계정·그룹(@org/standards)으로 적어 담당자가 바뀌어도
+  유효하도록 한다.</li>
+<li>첫 주 과제의 라벨 이름과 일차는 표 8.5를 기준으로 팀 규모에 맞게 줄인다.</li>
+<li>문서가 한 화면을 넘기 시작하면 무엇이 복사본인지 찾아 원본 참조로 바꾼다.</li>
+</ul>
+<h2 id="_4">점검</h2>
+<ul>
+<li class="task"><span class="box"></span>규칙의 내용(명령·커밋 형식·권한 조건)이 이 문서에 복사되어 있지 않은가</li>
+<li class="task"><span class="box"></span>읽을 순서의 파일이 모두 실재하는가</li>
+<li class="task"><span class="box"></span>질문 규약(답을 들으면 파일에 반영하는 PR)이 명시되어 있는가</li>
+<li class="task"><span class="box"></span>첫 주 과제가 실제 백로그(onboarding 라벨)와 연결되어 있는가</li>
+<li class="task"><span class="box"></span>마지막 개선 PR이 언제였는가(두 분기 넘게 없다면 5일 차 과제가 작동하지 않는 것이다)</li>
+</ul></div></section><section class="panel" id="s09" data-title="09 팀 스터디 가이드"><div class="doc"><h1 id="_1">팀 스터디 가이드</h1>
+<p>『팀을 위한 클로드 코드 완벽 가이드』를 팀 단위로 학습하는 커리큘럼이다. 6주 기본
+과정과 심화 2회로 구성한다. 주 1회 90분 모임을 기준으로 한다. 이 책은 개인의
+사용법이 아니라 팀의 표준과 공정을 다루므로, 스터디의 목표도 "책을 다 읽는 것"이
+아니라 <strong>매주 팀에 남는 산출물을 하나씩 만드는 것</strong>으로 설정한다. 6주가 끝나면
+팀의 CLAUDE.md 초안, 파일럿 기준 문서, 인터페이스 계약 1건, PR 템플릿, 1차 리뷰
+도입 계획이 저장소에 남아 있어야 한다.</p>
+<div class="w" data-w="roadmap"></div>
+
+<h2 id="_2">운영 방식</h2>
+<p><strong>모임 구성(90분)</strong></p>
+<table>
+<thead>
+<tr>
+<th>시간</th>
+<th>활동</th>
+<th>진행 요령</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15분</td>
+<td>읽기 요약</td>
+<td>진행자가 아니라 참가자 한 명이 돌아가며 그 주의 핵심을 5분 안에 정리한다</td>
+</tr>
+<tr>
+<td>25분</td>
+<td>실습 결과 공유</td>
+<td>사전 실습에서 진행이 어려웠던 지점과 예상과 다른 결과를 먼저 다룬다. 성공 사례보다 실패 사례의 학습 효과가 크다</td>
+</tr>
+<tr>
+<td>35분</td>
+<td>토론</td>
+<td>아래 주차별 질문을 "우리 팀에 적용하면"으로 바꿔 묻는다. 책 내용 확인이 아니라 결정을 내리는 시간이다</td>
+</tr>
+<tr>
+<td>15분</td>
+<td>산출물 결정</td>
+<td>토론 결과를 산출물 초안에 반영하고 담당자와 마감을 정한다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>원칙</strong></p>
+<ul>
+<li>읽기와 실습은 모임 전에 각자 마친다. 모임에서 책을 읽지 않는다.</li>
+<li>산출물은 저장소의 <code>docs/adoption/</code> 같은 한곳에 커밋해 스터디 자체를 기록으로
+  남긴다. 스터디가 끝난 뒤 이 폴더가 팀의 도입 문서가 된다.</li>
+<li>토론 질문에 정답을 맞히려 하지 않는다. 본문의 minishop·notihub 사례는 판단의
+  기준을 제시한 것이다. 답은 팀마다 다르다.</li>
+</ul>
+<p><strong>참가자 구성</strong></p>
+<ul>
+<li>5명 이하: 전원이 전 과정을 함께 한다.</li>
+<li>6~15명: 실습 공유는 2~3명씩 소그룹으로 나누고, 토론과 산출물 결정은 전체가 한다.</li>
+<li>팀 리드·엔지니어링 매니저: 1장을 읽은 뒤 4주차(6·7장)부터 합류해도 된다. 단,
+  5·6주차의 계약·리뷰 결정에는 반드시 참여한다.</li>
+</ul>
+<p><strong>사전 준비(스터디 전 주)</strong></p>
+<ul>
+<li>예제 저장소를 클론하고 부록 A의 실습 환경(클로드 코드, Node.js 22 이상,
+  Python 3.11 이상, jq, gh)을 갖춘다. 각 장 폴더의 README.md를 먼저 읽는다.</li>
+<li>전원이 2장의 첫 세션 실습(hello-todo)을 마치고 모이면 1주차 토론이 구체적으로
+  진행된다.</li>
+</ul>
+<hr />
+<h2 id="wk1">1주차 — 변화의 이해와 첫 세션</h2>
+<ul>
+<li><strong>목표</strong>: 팀이 겪는 문제를 이 책의 용어(작업 결합 오류·공유되지 않는 노하우·비용 편차)로
+  진단할 수 있다.</li>
+<li><strong>읽기</strong>: 1장 전체, 2장 2.1~2.4</li>
+<li><strong>사전 실습</strong>: hello-todo(2장 폴더)에서 첫 세션을 진행한다. 기능 추가를 위임하고,
+  변경을 검토해 승인하고, 한 번은 Esc로 중단하고, 한 번은 되돌리기를 사용한다.</li>
+<li><strong>토론</strong>
+  1. 우리 팀의 도구 사용은 1.1.1의 세 세대 중 어디에 있는가. 팀원마다 다른가.
+  2. 1.3의 세 문제(결합 시점 오류, 공유되지 않는 노하우, 비용 편차) 가운데 이미
+     겪은 사례를 하나씩 말해 보면 무엇이 나오는가.
+  3. 산출물을 검증하지 않고 받아들인 경험(바이브 코딩)이 있었다면 그때 무엇이
+     검증을 생략하게 했는가.</li>
+<li><strong>산출물</strong>: 팀 현재 상태 한 쪽(사용 도구, 활용 수준, 겪는 문제 3건). 이 문서가
+  6주 뒤 개선 여부를 비교하는 기준선이 된다.</li>
+<li><strong>진행자 메모</strong>: 첫 주의 논의는 도구 기능 질문으로 옮겨 가기 쉽다. 기능 질문은
+  부록 C와 2장으로 돌리고, 토론은 팀의 문제에 집중시킨다.</li>
+</ul>
+<h2 id="wk2">2주차 — 동작 원리와 워크플로</h2>
+<ul>
+<li><strong>목표</strong>: 같은 지시에 다른 결과가 나오는 이유를 설명하고, 불완전한 지시문을
+  개선할 수 있다.</li>
+<li><strong>읽기</strong>: 2.5~2.7(에이전틱 루프, 컨텍스트 윈도, 권한 모드), 3장</li>
+<li><strong>사전 실습</strong>: moneylog(3장 폴더)에서 "환불 처리가 이상하다"는 제보를 받은
+  상황을 재현한다. 표 3.1의 네 단계 질문으로 구조를 파악하고, 플랜 모드로 계획을
+  먼저 받아 검토한 뒤 수정한다. 같은 지시를 새 세션에서 한 번 더 실행해 경로가
+  달라지는지 확인한다.</li>
+<li><strong>토론</strong>
+  1. 두 번 실행한 결과가 달랐다면 어디에서 갈렸는가. 팀은 이 변동을 어떻게 다루고
+     있는가(재시도, 리뷰, 무시).
+  2. 최근 팀원이 실제로 쓴 지시문 하나를 가져와 표 3.2의 네 전략으로 고쳐 보면
+     무엇이 빠져 있었는가.
+  3. 플랜 모드가 필수인 작업을 팀 기준으로 정한다면 어떤 작업인가(3.1.3의
+     되돌리기 어려운 결정 기준).</li>
+<li><strong>산출물</strong>: 팀의 지시문 모범 사례 3건(목표·제약·판정 기준이 모두 있는 형태)과
+  플랜 모드 의무 작업 목록 초안</li>
+<li><strong>진행자 메모</strong>: 2.5.1의 확률적 생성 설명은 리뷰와 평가가 필요한 이유를 다루는
+  이후 장들의 근거다. 이 주에 해당 내용을 확실히 정리해야 5·6주차 토론이 수월하다.</li>
+</ul>
+<h2 id="wk3">3주차 — 컨텍스트 설계와 확장 기능</h2>
+<ul>
+<li><strong>목표</strong>: 팀 저장소의 CLAUDE.md에 넣을 것과 뺄 것을 판단하고, 반복 작업을
+  커맨드·훅 후보로 식별할 수 있다.</li>
+<li><strong>읽기</strong>: 4장, 5장</li>
+<li><strong>사전 실습</strong>: paylog(4장 폴더)의 packages/api에서 /init으로 CLAUDE.md 초안을
+  만들고 예제 4.2와 비교한다. paylog(5장 폴더)에서 /review와 /commit을 실행하고,
+  .env 수정을 지시해 보호 훅이 차단하는 것을 확인한다.</li>
+<li><strong>토론</strong>
+  1. /init이 만든 초안에서 4.1.2의 기준(반복되는 정보만, 파생 가능한 정보 제외)에
+     어긋나는 줄은 무엇인가.
+  2. 우리 팀에서 매주 반복되는 지시 세 가지를 꼽으면 무엇이고, 그중 커맨드로
+     만들 것과 훅으로 강제할 것은 어떻게 갈리는가(권고 vs 강제, 5.2.2).
+  3. 서브에이전트로 분리하면 좋을 역할이 있는가(리뷰어, 조사, 문서).</li>
+<li><strong>산출물</strong>: 실제 저장소의 CLAUDE.md 초안 1건(도입 키트 05 참고), 커맨드·훅
+  후보 목록(각각 권고/강제 표시)</li>
+<li><strong>진행자 메모</strong>: CLAUDE.md 초안은 이 시점에 완성하지 않는다. 4주차의 권한
+  정책과 7.1.1의 "넣을 것과 뺄 것" 기준으로 한 번 더 걸러낸다.</li>
+</ul>
+<h2 id="wk4">4주차 — 도입 전략과 팀 공통 환경</h2>
+<ul>
+<li><strong>목표</strong>: 파일럿의 성공·실패 기준을 숫자로 확정하고, 강제할 규칙과 권고할
+  규칙을 구분한 팀 환경을 설계할 수 있다.</li>
+<li><strong>읽기</strong>: 6장, 7장</li>
+<li><strong>사전 실습</strong>: 도입 키트의 02(파일럿 기준 문서)와 03(보안 검토 답변)를 각자
+  작성해 온다. notihub(7장 폴더)에서 <code>echo '&lt;이벤트 JSON&gt;' | python
+  .claude/hooks/guard_commands.py</code>로 차단 훅을 단독 검증한다.</li>
+<li><strong>토론</strong>
+  1. 각자 써 온 파일럿 기준을 비교하면 채택·산출·체감 지표의 수치가 얼마나
+     다른가. 하나로 합칠 때 무엇을 기준으로 삼는가(6.1.2의 paylog 예: 활성 80%,
+     병합 시간 20% 단축, 반려율·결함률 악화 없음, 지속 사용 70%).
+  2. 실패 판정 기준(사용 정착·품질 악화·보안 차단) 가운데 우리 조직에서 실제로
+     발동할 가능성이 높은 것은 무엇인가.
+  3. 7.3의 기준으로 우리 팀 규칙을 강제(훅·권한 규칙)와 권고(CLAUDE.md)로 나누면
+     어느 쪽이 많은가. 강제가 많다면 왜인가.</li>
+<li><strong>산출물</strong>: 파일럿 기준 문서 확정본, 팀 권한 정책 초안(도입 키트 06 참고),
+  3주차 CLAUDE.md 초안의 2차 개정</li>
+<li><strong>진행자 메모</strong>: 리드가 이 주에 합류한다면 사전 실습 대신 02·03 작성만 요청한다.
+  6.5의 도입 반대 논리를 미리 읽어 두면 조직 설득 논의가 구체적이 된다.</li>
+</ul>
+<h2 id="wk5">5주차 — 작업 결합과 Git 전략</h2>
+<ul>
+<li><strong>목표</strong>: 팀에서 계약으로 만들 결정을 식별하고, 결합 전 검증과 PR 크기 기준을
+  정할 수 있다.</li>
+<li><strong>읽기</strong>: 9장, 10장(8장은 심화 A로 미룬다)</li>
+<li><strong>사전 실습</strong>: minishop(9장 폴더)에서 examples/before_contract/의 결합 실패
+  재현 스크립트를 실행해 장부가 맞지 않는 것을 확인한다. 계약 테스트
+  <code>python -m pytest tests/test_pricing_contract.py -v</code>를 실행한다. minishop(10장
+  폴더)에서 견본을 복사한 뒤 <code>claude --worktree &lt;이름&gt;</code>으로 두 세션을 병렬로 연다.</li>
+<li><strong>토론</strong>
+  1. 최근 우리 팀에서 결합 시점에 드러난 어긋남을 하나 떠올리면, 9.1.2의 세 원인
+     (명세 부재·컨텍스트 불일치·암묵적 가정) 중 무엇이었는가.
+  2. 9.2.1의 판별 질문 세 개(둘 이상이 의존하는가, 결합 시점에야 드러나는가,
+     바꾸려면 여러 곳을 고쳐야 하는가)를 우리 코드에 적용하면 계약으로 만들 결정은
+     무엇인가. 세 개만 고른다.
+  3. PR 크기 상한을 정한다면 몇 줄인가. 10.1.1의 400줄 기준이 우리 리뷰 용량에
+     맞는가.</li>
+<li><strong>산출물</strong>: 인터페이스 계약 문서 1건(예제 9.5 형식), PR 템플릿 적용(도입 키트
+  07), PR 크기·브랜치 수명 기준</li>
+<li><strong>진행자 메모</strong>: 재현 스크립트의 결과(주문마다 1,200원 손해)를 먼저 제시하면
+  계약의 필요성이 별도 설명 없이 드러난다. 실습을 건너뛴 참가자가 있으면 모임에서
+  2분 안에 실행해 결과를 제시한다.</li>
+</ul>
+<h2 id="wk6">6주차 — 리뷰와 품질</h2>
+<ul>
+<li><strong>목표</strong>: 리뷰 병목의 현재 단계를 진단하고, 1차 리뷰 자동화의 적용 범위와
+  사람 리뷰의 영역을 정할 수 있다.</li>
+<li><strong>읽기</strong>: 11장, 12장</li>
+<li><strong>사전 실습</strong>: minishop(11장 폴더)의 리뷰어 서브에이전트 3종(contract·security·
+  convention)의 정의를 읽고, 계약을 위반하는 변경을 만들어 <code>@agent-contract-reviewer</code>
+  에게 리뷰를 맡긴다. minishop(12장 폴더)에서 <code>python evals/run_evals.py</code>로 평가
+  세트를 실행한다(claude CLI 필요).</li>
+<li><strong>토론</strong>
+  1. 표 11.1의 리뷰 품질 붕괴 다섯 단계(큐 형성 → 압축 리뷰 → 형식적 승인 → 결함
+     통과 → 신뢰 붕괴) 중 우리 팀은 어디에 있는가. 근거가 되는 신호는 무엇인가.
+  2. 1차 리뷰를 자동화한다면 어떤 관점의 리뷰어를 먼저 두는가. 오탐이 반복될 때
+     누가 리뷰어 정의를 고치는가(11.2.2).
+  3. 사람 리뷰가 반드시 맡아야 할 판단(11.3.1)과, 사람의 리뷰 역량을 유지할 장치
+     (11.3.2)를 우리 팀에서는 무엇으로 두는가.</li>
+<li><strong>산출물</strong>: 1차 리뷰 도입 계획(적용 저장소, 리뷰어 관점, 오탐 관리 절차, 사람
+  리뷰 필수 조건), 테스트·문서 품질 기준 초안(12.2)</li>
+<li><strong>진행자 메모</strong>: 6주차 마지막 15분은 1주차 산출물(팀 현재 상태)과 지금까지의
+  산출물을 나란히 놓고, 무엇이 결정되었고 무엇이 미뤄졌는지 확인하는 데 쓴다.
+  미뤄진 항목은 자가 진단(10_자가진단.md)의 진단 C로 목록화한다.</li>
+</ul>
+<hr />
+<h2 id="wk7">심화 A — 노하우 자산화와 비용·보안 거버넌스</h2>
+<ul>
+<li><strong>읽기</strong>: 8장, 13장, 14장</li>
+<li><strong>사전 실습</strong>: notihub(8장 폴더)에서 <code>/plugin marketplace add ./claude-plugins</code>로
+  사내 마켓플레이스를 등록해 플러그인을 설치한다. notihub(13장 폴더)에서
+  <code>python ops/weekly_cost_report.py spend_this_week.csv spend_last_week.csv</code>로 주간
+  비용 리포트를 만든다. notihub(14장 폴더)의 payments-api에서 deny 규칙이 동작하는
+  것을 확인한다.</li>
+<li><strong>토론</strong>: 어떤 노하우를 자산으로 승격할지의 기준(8.1.2)과 심사 주체. 비용 편차를
+  "고비용 사용자"가 아니라 "설명되지 않은 사용"으로 다루는 어휘(13.1.2)에 팀은
+  동의하는가. 최소 권한 프로파일을 적용할 첫 저장소는 어디인가(14.1.1).</li>
+<li><strong>산출물</strong>: 자산 승격 절차 초안, 주간 비용 리포트 운영안(주기·공개 범위·알림
+  임계), 권한 프로파일 초안 1건</li>
+</ul>
+<h2 id="wk8">심화 B — 자동화와 성과 측정</h2>
+<ul>
+<li><strong>읽기</strong>: 15장, 16장, 17장</li>
+<li><strong>사전 실습</strong>: notihub(16장 폴더)에서 <code>sh ops/report_comment.sh spend_this_week.csv spend_last_week.csv</code>로 헤드리스 실행을,
+  <code>sh ops/nightly_migrate.sh</code>로 야간 배치를 실행한다(API 키 필요, jq 필요). 자가
+  진단(10_자가진단.md) 세 가지를 각자 수행해 온다.</li>
+<li><strong>토론</strong>: 무인 실행에 맡길 수 있는 작업의 자격(16.3.1)에 우리 백로그의 어떤 작업이
+  해당하는가. 표 17.2의 네 단계(전달, 활용, 품질·표준, 자산·성장) 중 지금 측정할 수
+  있는 지표는 무엇인가. 자가 진단 결과에서 팀원 간 응답이 갈린 문항은 무엇이며
+  왜 갈렸는가.</li>
+<li><strong>산출물</strong>: 무인 실행 후보 목록과 한도 설계(턴·예산·중단 조건), 팀 측정
+  대시보드 지표 선정, 다음 분기 개선 항목 3건</li>
+</ul>
+<hr />
+<h2 id="_3">완주 점검</h2>
+<div class="w" data-w="finish"></div>
+
+<p>스터디가 끝났을 때 <code>docs/adoption/</code>에 다음이 있어야 한다.</p>
+<ul>
+<li class="task"><span class="box"></span>팀 현재 상태 문서(1주차)와 6주 뒤의 변화 기록</li>
+<li class="task"><span class="box"></span>지시문 모범 사례 3건, 플랜 모드 의무 작업 목록</li>
+<li class="task"><span class="box"></span>CLAUDE.md 초안(2차 개정), 커맨드·훅 후보 목록</li>
+<li class="task"><span class="box"></span>파일럿 기준 문서 확정본, 권한 정책 초안</li>
+<li class="task"><span class="box"></span>인터페이스 계약 1건, PR 템플릿, PR 크기·브랜치 수명 기준</li>
+<li class="task"><span class="box"></span>1차 리뷰 도입 계획, 테스트·문서 품질 기준 초안</li>
+</ul>
+<p>여섯 항목 가운데 넷 이상이 남았다면 스터디는 목적을 달성한 것이다. 남지 않은
+항목은 해당 주차의 토론이 결정으로 이어지지 않은 것이므로, 그 장만 다시 읽고
+결정만 내리는 짧은 모임을 한 번 더 연다.</p></div></section><section class="panel" id="s10" data-title="10 도입 조직 자가 진단"><div class="doc"><h1 id="_1">도입 조직 자가 진단</h1>
+<p>『팀을 위한 클로드 코드 완벽 가이드』의 본문 기준을 세 가지 진단으로 옮긴 것이다.
+각 진단은 쓰는 시점과 답하는 사람이 다르다.</p>
+<table>
+<thead>
+<tr>
+<th>진단</th>
+<th>언제</th>
+<th>누가</th>
+<th>무엇을 알게 되는가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 기반 관행 점검</td>
+<td>도입 결정 전, 또는 도입이 기대만큼 효과가 없을 때</td>
+<td>리드</td>
+<td>지금 필요한 것이 도구인지 표준인지</td>
+</tr>
+<tr>
+<td>B. 안티패턴 조기 신호</td>
+<td>운영 중 분기마다</td>
+<td>리드와 구성원이 각자</td>
+<td>사고로 이어지기 전의 실패 패턴과 그 교정의 첫걸음</td>
+</tr>
+<tr>
+<td>C. 리더 결정 점검</td>
+<td>도입 단계가 바뀔 때마다</td>
+<td>리드</td>
+<td>아직 내리지 않은 결정과 그 결정을 미룬 대가</td>
+</tr>
+</tbody>
+</table>
+<p><strong>진행 방법</strong>: 구성원이 있는 진단(B)은 각자 답한 뒤 합산한다. 리드의 답과 구성원의
+답이 다른 문항이 조직의 실제 상태에 가장 가깝다. 결과는 아래 기록 양식에 남겨
+다음 분기와 비교한다.</p>
+<hr />
+<h2 id="hA">진단 A — 기반 관행 점검 (본문 17.3)</h2>
+<p>안티패턴의 대부분은 기반의 부재에서 발생한다. 도구를 바꾸기 전에 다섯 가지를 확인한다.</p>
+<div class="w" data-w="diagA"></div>
+
+<p><strong>판정</strong>: "아니오"가 세 개 이상이면 지금 필요한 것은 더 나은 도구가 아니라 표준과
+도입 체계다. 이 책의 3부(6~8장)로 돌아간다. 하나 또는 둘이라면 해당 항목의 장만
+먼저 읽고 4부로 진행한다.</p>
+<p>예를 들어 1·3번만 "아니오"인 팀(PR 없이 직접 푸시, 방침 문서 없음)은 도구 도입보다
+PR 기반 작업 흐름(10.1)과 팀 CLAUDE.md(05)를 먼저 만들어야 한다. 그 둘이 없으면
+에이전트의 산출물을 검토할 지점도, 세션이 따를 규칙도 없다.</p>
+<hr />
+<h2 id="hB">진단 B — 안티패턴 조기 신호 (본문 17.3, 표 17.6·17.7)</h2>
+<p>각 문항에 "예"라고 답하면 해당 안티패턴의 조기 신호가 나타난 것이다. 신호의 위치
+열은 그 신호를 확인하는 곳을 가리킨다. 교정의 첫걸음 열은 지금 해야 할 일을
+가리킨다.</p>
+<div class="w" data-w="diagB"></div>
+
+<p><strong>판정과 읽는 법</strong></p>
+<ul>
+<li>"예"가 하나라도 있으면 해당 행의 첫걸음을 이번 분기 안에 실행한다.</li>
+<li>안티패턴은 연쇄된다(17.3.2). 리뷰 스킵(2)이 나타나면 상류의 산출량 평가(6)와
+  비용 방임(3)을 함께 점검한다. 활용이 위축되었다면 최근의 비용 정책을 확인한다.
+  신호 하나가 나타났을 때 그 상류 조건까지 점검하는 조직이 사고를 미리 막는다.</li>
+<li>교정 완료는 조치 실행이 아니라 신호의 정상화로 판정한다. 본문의 notihub는 권한
+  프로파일을 재적용해 allow 목록 증가를 멈췄다. 그러나 예외 신청은 늘지 않았고,
+  확인 결과 구성원이 개인 설정으로 우회하고 있었다. 신청서를 절반으로 줄인 뒤에야
+  신호가 정상으로 돌아왔다(17.3.2).</li>
+</ul>
+<p><strong>문항별 확인 방법(데이터의 출처)</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>확인 방법</th>
+<th>비교 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>차단 훅의 실행 기록(훅이 남긴 로그 또는 7.5.3의 기록 방식)을 규칙별로 집계</td>
+<td>분기 전과 비교. 0에 수렴하거나 한 규칙이 대부분이면 신호</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PR 생성→승인 시각의 차이를 저장소 API로 집계해 변경 줄 수와 함께 확인</td>
+<td>줄 수 대비 검토 시간이 실제 읽기 속도보다 짧으면 신호</td>
+</tr>
+<tr>
+<td>3</td>
+<td>13.3.2의 주간 리포트 존재 여부 자체가 답이다</td>
+<td>리포트가 없으면 "예"</td>
+</tr>
+<tr>
+<td>4</td>
+<td>무인 배치의 아침 리포트에서 실패율 추세와 대상 건수 추세를 나란히 확인</td>
+<td>실패율↑·대상↑가 동시면 신호</td>
+</tr>
+<tr>
+<td>5</td>
+<td>파일럿 기준 문서(02)의 판정 기록이 있는가</td>
+<td>기록이 없으면 "예"</td>
+</tr>
+<tr>
+<td>6</td>
+<td>저장소 API로 주별 PR 수와 평균 변경 줄 수를 집계</td>
+<td>둘이 함께 증가하면 신호</td>
+</tr>
+<tr>
+<td>7</td>
+<td>13.2.1 분석 대시보드의 개인별 수용률·활용도 분산</td>
+<td>분산이 분기마다 커지면 신호</td>
+</tr>
+<tr>
+<td>8</td>
+<td>재작업 PR 비율과 병합 충돌 건수를 동시 진행 작업 수와 함께 확인</td>
+<td>병렬 작업 수와 함께 오르면 신호</td>
+</tr>
+<tr>
+<td>9</td>
+<td>settings.json의 permissions.allow 항목 수를 Git 이력으로 추적</td>
+<td>늘기만 하고 줄어든 적이 없으면 "예"</td>
+</tr>
+<tr>
+<td>10</td>
+<td>리뷰 코멘트에서 주니어의 이의 제기·직접 수정 건수를 분기별로 집계</td>
+<td>감소 추세면 신호</td>
+</tr>
+</tbody>
+</table>
+<p>데이터가 없는 문항은 "확인 불가"로 기록한다. 확인 불가가 셋 이상이면 측정 체계
+자체가 없다는 뜻이므로 17.1로 돌아간다.</p>
+<hr />
+<h2 id="hC">진단 C — 리더 결정 점검 (부록 B.4, 표 B.7~B.10)</h2>
+<div class="w" data-w="deps"></div>
+
+<p>각 항목이 팀에서 "결정되어 문서로 존재하는가"를 확인한다. 오른쪽 열은 그 결정을
+미루었을 때 발생하는 결과다. 미결정 항목이 곧 리드의 할 일 목록이 된다.</p>
+<h3 id="6">도입 단계 (6장)</h3>
+<div class="w" data-w="diagC" data-sec="0"></div>
+
+<h3 id="710">표준과 공정 (7~10장)</h3>
+<div class="w" data-w="diagC" data-sec="1"></div>
+
+<h3 id="1114">품질과 거버넌스 (11~14장)</h3>
+<div class="w" data-w="diagC" data-sec="2"></div>
+
+<h3 id="1517">자동화와 조직 (15~17장)</h3>
+<div class="w" data-w="diagC" data-sec="3"></div>
+
+<p><strong>판정</strong>: 부문별로 미결정 항목을 센다. 네 부문의 순서(도입 → 표준과 공정 → 품질과
+거버넌스 → 자동화와 조직)는 본문의 진행 순서이자 의존 순서다. 앞 부문이 비어 있으면
+뒤 부문의 결정은 실효가 없으므로, 가장 앞에서 비어 있는 부문의 장부터 읽는다.
+모든 항목을 한 번에 결정할 필요는 없다. 팀이 그 단계에 도달했을 때 해당 부문이
+채워져 있으면 충분하다.</p>
+<hr />
+<div class="w" data-w="diagResult"></div>
+
+<h2 id="_2">결과 해석 예</h2>
+<p>가상의 12인 팀이 도입 두 분기째에 진단한 결과다.</p>
+<ul>
+<li>진단 A: "아니오" 1개(5번 사고 복기 절차 없음) → 기반은 갖춰졌다. 14.3.4의 플레이북만 보강한다.</li>
+<li>진단 B: 리드는 2번(리뷰 스킵)만 "예"라고 답했으나 구성원 다수는 2번과 9번(권한
+  방임)에 "예"라고 답했다 → 리드가 확인하지 못한 신호가 9번이다. allow 목록의 Git
+  이력을 확인하니 두 분기 동안 열한 항목이 늘고 하나도 줄지 않았다. 2번의 상류
+  조건으로 6번(산출량 평가)을 함께 점검했더니 PR 수와 평균 크기가 함께 늘고 있었다.</li>
+<li>진단 C: 도입 0 / 표준·공정 1(표준 개정 절차 미결정) / 품질·거버넌스 3(리뷰 역량
+  유지 장치, 권한 예외 승인 절차, 사고 대응 역할) / 자동화·조직 6 → 자동화·조직은
+  아직 해당 단계에 이르지 않았으므로 정상이다. 품질·거버넌스의 3건이 이번 분기의
+  할 일이다. 이 3건은 진단 B의 2번·9번과 정확히 겹친다.</li>
+</ul>
+<p>이번 분기 조치는 세 가지로 정해졌다. 표준 개정 절차 문서화(7.5.2), 권한 예외 승인
+절차와 예외 기한 설정(14.1.1, B-9의 첫걸음), 리뷰 용량 재배정과 1차 리뷰 자동화
+검토(11.2, B-2의 첫걸음). 평가 기준에서 산출량을 제외하는 논의(17.4.2)는 다음 분기
+안건으로 넘겼다.</p>
+<h2 id="_3">결과 기록 양식</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>진단일</td>
+<td></td>
+</tr>
+<tr>
+<td>응답자(리드 / 구성원 수)</td>
+<td></td>
+</tr>
+<tr>
+<td>진단 A: "아니오" 개수와 항목</td>
+<td></td>
+</tr>
+<tr>
+<td>진단 B: "예" 문항 번호(리드 답 / 구성원 다수 답)</td>
+<td></td>
+</tr>
+<tr>
+<td>진단 C: 부문별 미결정 수(도입 / 표준·공정 / 품질·거버넌스 / 자동화·조직)</td>
+<td></td>
+</tr>
+<tr>
+<td>이번 분기 조치(문항 번호 → 첫걸음 → 담당 → 기한)</td>
+<td></td>
+</tr>
+<tr>
+<td>다음 진단 예정일</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>같은 양식으로 분기마다 기록하면 진단 B의 "예" 개수와 진단 C의 미결정 수가 줄어드는
+추세 자체가 도입의 진척을 보여 주는 지표가 된다.</p></div></section><div class="pager" id="pager"></div></main>
+</div>
+<script>
+const DATA = {"forms": {"s02": {"tpl": "# 파일럿 기준 (작성일: YYYY-MM-DD)\n\n## 대상과 기간\n- 팀: (팀명, 개발자 N명)\n- 저장소: (저장소 이름)\n- 기간: YYYY-MM-DD ~ YYYY-MM-DD (N주)\n- 제외 범위: (파일럿에서 다루지 않는 작업 — 예: 운영 DB 접근, 배포 조작)\n\n## 성공 기준 (모두 충족하면 확산 제안)\n- 채택: (주간 활성 사용 비율 등)\n- 산출: (착수→병합 시간, 병합 PR 수 등)\n- 품질: (반려율·결함률이 악화되지 않을 것)\n- 체감: (\"계속 사용하겠다\" 응답 비율)\n\n## 실패 기준 (하나라도 해당하면 종료)\n- 사용 정착: (N주 차 이후 활성 비율이 기준 아래로 떨어지고 회복되지 않는 경우)\n- 품질 악화: (품질 지표가 유의미하게 나빠지고 원인이 도구로 좁혀지는 경우)\n- 보안 차단: (보안 검토에서 해소할 수 없는 차단 사유가 확인되는 경우)\n\n## 측정과 판정\n- 측정: (주기, 담당자, 데이터 출처)\n- 판정: (어느 주차의 데이터로, 누가 결정하는가)\n- 지표는 판정에만 사용하고 개인 평가와 분리한다\n", "sample": "# 파일럿 기준 (작성일: 2026-08-20)\n\n## 대상과 기간\n- 팀: 결제 서비스팀(개발자 5명)\n- 저장소: paylog\n- 기간: 2026-09-01 ~ 2026-10-12 (6주)\n- 제외 범위: 운영 데이터베이스 접근, 배포 조작\n\n## 성공 기준 (모두 충족하면 확산 제안)\n- 채택: 주간 활성 사용 80% 이상 유지\n- 산출: 착수부터 병합까지 걸리는 시간 20% 단축\n- 품질: PR 반려율과 결함 발생률이 나빠지지 않을 것\n- 체감: \"계속 사용하겠다\" 응답 70% 이상\n\n## 실패 기준 (하나라도 해당하면 종료)\n- 4주 차 이후 주간 활성 사용 50% 미만이 2주 연속\n- 결함 발생률이 뚜렷하게 증가하고 원인이 도구로 좁혀짐\n- 보안 검토에서 해소할 수 없는 차단 사유 확인\n\n## 측정과 판정\n- 측정: 매주 금요일, 운영 책임자가 기록\n- 판정: 5~6주 차 데이터를 기준으로 결정\n- 지표는 판정에만 사용하고 개인 평가와 분리한다\n"}, "s03": {"tpl": "# 클로드 코드 보안 검토 답변 (작성일: YYYY-MM-DD)\n\n## 1. 계약과 적용 정책\n- 계약 유형: Team / Enterprise / 클라우드 경로(Bedrock·Vertex·Foundry) 중 해당 항목\n- 학습 사용: (상용 계약 기준 미사용 — 근거 문서, 확인일)\n- 보존: (적용되는 보존 정책, 사용자 지정·ZDR 가능 여부 — 근거 문서, 확인일)\n\n## 2. 데이터 범위\n- 사용 저장소: (목록)\n- 차단 대상: (.env, 자격 증명 파일, 생성 코드 디렉터리 등)\n- 외부 전송: (연결한 MCP 서버와 각각의 용도)\n\n## 3. 기술 통제\n- 권한: (기본 권한 모드, 승인을 요구하는 작업)\n- 차단: (훅과 권한 설정으로 막은 동작 목록)\n- 배포: (관리 정책 파일의 적용 여부)\n\n## 4. 계약 통제\n- DPA 체결 여부, 보존 조건, 감사 지원, 데이터 처리 위치\n\n## 5. 승인 요청 범위\n- 허용: (예: 소스 저장소에서의 개발 작업)\n- 조건부 허용: (예: 고객 데이터가 포함된 저장소 — 별도 승인 후)\n- 금지: (예: 운영 데이터베이스 접근, 배포 조작)\n", "sample": "## 1. 계약과 적용 정책\n- 계약 유형: Team\n- 학습 사용: 상용 계약 기준 미사용 (상용 이용약관 §X, 2026-08-20 확인)\n- 보존: 서비스 표준 보존 정책 (개인정보 처리방침, 2026-08-20 확인)\n\n## 2. 데이터 범위\n- 사용 저장소: paylog\n- 차단 대상: .env 계열, 자격 증명 파일, dist/ 생성 코드\n- 외부 전송: Jira MCP(이슈 조회·생성)\n\n## 3. 기술 통제\n- 권한: 기본 default, 파일 편집·명령 실행에 승인 요구\n- 차단: .env 읽기·쓰기(훅 protect_env.py), 운영 DB 접속 명령(permissions.deny)\n- 배포: 관리 정책 파일 미적용(파일럿 단계, 확산 시 적용 예정)\n\n## 5. 승인 요청 범위\n- 허용: paylog 저장소에서의 개발 작업\n- 조건부 허용: 고객 데이터가 포함된 저장소(별도 승인 후)\n- 금지: 운영 데이터베이스 접근, 배포 조작\n"}}, "diagA": [{"q": "모든 변경이 버전 관리와 PR을 거치는가?", "no": "에이전트의 산출물을 검토할 지점 자체가 없다. 리뷰(11장)와 게이트(9.3.3)를 도입할 기반부터 만들어야 한다"}, {"q": "변경은 독립적으로 배포하고 롤백할 수 있는 크기로 나누어져 있는가?", "no": "생성 속도가 올라가면 큰 변경이 더 빨리 쌓인다. PR 크기와 브랜치 수명 기준(10.1)이 먼저다"}, {"q": "도구 사용 방침이 문서화되어 있으며 구성원이 그 위치를 알고 있는가?", "no": "팀마다, 사람마다 다른 방식이 굳어진다. 팀 공통 CLAUDE.md와 권한 정책(7장)부터 시작한다"}, {"q": "효과를 확인할 수 있는 측정 체계가 하나라도 운영되고 있는가?", "no": "도입 효과를 인상으로 판단하게 되고, 반대 논리에 답하지 못한다. 파일럿 기준(6.1.2)이 최소 측정 체계다"}, {"q": "사고와 실패를 기록하고 복기하는 절차가 있는가?", "no": "같은 사고가 반복되고 예외가 늘어난다. 사고 대응 플레이북(14.3.4)과 회고(17.2.2)가 필요하다"}], "diagB": [{"q": "가드레일(차단 훅)의 실행이 0에 수렴하거나 특정 규칙에만 집중된다", "ap": "방치된 표준", "where": "훅 실행 기록(7.5.3)", "step": "표준 개정 절차를 가동하고 규칙과 워크플로의 충돌 여부를 확인"}, {"q": "PR 승인까지의 시간이 실제 검토가 어려울 정도로 짧다", "ap": "리뷰 스킵", "where": "리뷰 지표(11.3.2)", "step": "리뷰 용량을 재배정하고 1차 리뷰 자동화를 도입"}, {"q": "주간 비용 리포트 없이 월별 청구서만 확인한다", "ap": "비용 방임", "where": "사용량 집계(13.3)", "step": "주간 리포트와 기준선 대비 배수 알림부터 마련"}, {"q": "무인 실행의 실패율이 높아지는데도 대상 범위는 계속 늘고 있다", "ap": "과잉 자동화", "where": "배치 결과·아침 리포트(16.3)", "step": "선별 기준을 다시 적용하고 실패 작업의 무인 실행 자격을 회수"}, {"q": "도입 효과를 묻는 질문에 기준선 데이터로 답하지 못한다", "ap": "전면 도입 강행", "where": "측정 체계 부재(6장)", "step": "기준선을 측정하고 확산 속도를 조정"}, {"q": "PR 수가 늘면서 PR의 평균 크기도 함께 커진다", "ap": "산출량 평가", "where": "배치 크기 추세(17.1)", "step": "평가 기준에서 산출량을 제외(17.4.2)"}, {"q": "수용률과 활용도의 개인별 편차가 계속 벌어진다", "ap": "요령의 사일로", "where": "분석 대시보드(13.2.1)", "step": "8장의 공유회와 챔피언 제도를 가동"}, {"q": "재작업률과 결합 충돌이 병렬 작업 수와 함께 증가한다", "ap": "게이트 없는 병렬", "where": "게이트 기록(9.3.3)", "step": "게이트 통과를 병합 조건으로 강제"}, {"q": "권한 allow 목록이 늘어나기만 하고 줄어들지 않는다", "ap": "권한 방임", "where": "설정 이력(14.1)", "step": "권한 프로파일을 재적용하고 예외에 기한을 설정"}, {"q": "주니어의 이의 제기와 직접 수정이 줄고 있다", "ap": "주니어 방치", "where": "리뷰 기록(11.3.2)", "step": "17.4.1의 연습 설계 적용"}], "diagC": [{"title": "도입 단계 (6장)", "rows": [{"item": "파일럿 팀과 기간, 작업 범위", "risk": "효과를 관찰하기 어려운 조건에서 도입 여부를 판단하게 된다", "ref": "6.1.1"}, {"item": "성공 기준과 실패 판정 기준", "risk": "결과에 따라 기준이 바뀌어 파일럿이 종료되지 않는다", "ref": "6.1.2"}, {"item": "확산 일정과 구간별 판정 지점", "risk": "준비 없이 적용 인원만 늘어난다", "ref": "6.1.3"}, {"item": "계약 경로와 시트 배정 기준", "risk": "비용 구조와 사용량 집계 위치가 구성원마다 달라진다", "ref": "6.2"}, {"item": "혼용 환경의 표준화 범위", "risk": "도구 통일을 강제하거나 방치하는 양극단으로 흐른다", "ref": "6.3"}, {"item": "데이터 정책의 확인 범위와 보안 검토 담당", "risk": "도입 막바지에 보안 검토로 일정이 중단된다", "ref": "6.4"}]}, {"title": "표준과 공정 (7~10장)", "rows": [{"item": "공통 지침에 넣을 것과 개인에게 맡길 것", "risk": "팀 규칙과 개인의 취향이 뒤섞여 규칙이 지켜지지 않는다", "ref": "7.1"}, {"item": "강제할 규칙과 권고할 규칙의 구분", "risk": "모든 규칙이 권고로 전락하거나 모든 규칙이 장벽이 된다", "ref": "7.3, 7.4"}, {"item": "표준의 개정 권한과 절차", "risk": "갱신되지 않은 지침이 남아 표준 전체의 신뢰도가 떨어진다", "ref": "7.5.2"}, {"item": "자산 승격의 심사 주체와 기준", "risk": "개인의 노하우가 공유되지 않거나 검증 없이 배포된다", "ref": "8.1.2, 8.2.2"}, {"item": "작업 분할 단위와 인터페이스 계약의 작성 시점", "risk": "결합 단계에 오류가 집중된다", "ref": "9.2, 9.3"}, {"item": "게이트 통과 조건과 자동화 범위", "risk": "검증이 사람의 성실성에 의존하게 된다", "ref": "9.3.3"}, {"item": "브랜치 수명과 PR 크기의 기준", "risk": "리뷰가 감당하기 어려운 규모의 변경이 누적된다", "ref": "10.1"}]}, {"title": "품질과 거버넌스 (11~14장)", "rows": [{"item": "1차 리뷰의 적용 범위와 리뷰어 정의", "risk": "자동 리뷰가 노이즈가 되어 무시된다", "ref": "11.2"}, {"item": "사람 리뷰의 필수 조건과 병합 차단 기준", "risk": "승인 절차가 형식적으로 운영된다", "ref": "11.3.1, 9.3.3"}, {"item": "리뷰 역량 유지 장치", "risk": "검증할 수 없는 승인자가 늘어난다", "ref": "11.3.2"}, {"item": "테스트와 문서에 요구할 기준", "risk": "생성량은 늘지만 검증 역량은 그대로 남는다", "ref": "12.1, 12.2"}, {"item": "작업 유형별 모델 배정과 기본값", "risk": "동일한 작업의 비용이 구성원마다 크게 달라진다", "ref": "13.3.1"}, {"item": "비용 리포트의 주기와 공개 범위, 이상 감지 임계", "risk": "청구서가 도착한 뒤에야 문제를 발견한다", "ref": "13.3.2, 13.3.3"}, {"item": "프로젝트별 권한 프로파일과 예외 승인 절차", "risk": "편의를 위해 확대된 권한이 회수되지 않는다", "ref": "14.1.1"}, {"item": "확장 재료의 설치 허용 기준과 검증 주체", "risk": "공급망 경로로 통제 밖의 코드가 유입된다", "ref": "14.2.2"}, {"item": "사고 대응의 역할 분담과 기록 보존 정책", "risk": "사고 원인의 규명이 늦어진다", "ref": "14.3"}]}, {"title": "자동화와 조직 (15~17장)", "rows": [{"item": "에이전트 팀을 사용할 작업의 기준", "risk": "조율 비용이 병렬화의 이득을 넘어선다", "ref": "15.2"}, {"item": "무인에 맡길 작업의 자격 조건", "risk": "검증하기 어려운 작업이 무인 실행으로 넘어간다", "ref": "16.3.1"}, {"item": "무인 실행의 한도와 중단 조건", "risk": "사람이 없는 시간에 사고가 확대된다", "ref": "16.3.2"}, {"item": "자동화의 권한 범위와 저장소 설정", "risk": "자동화가 완료되지 못하거나 과도한 권한을 갖게 된다", "ref": "16.2, A.3"}, {"item": "측정할 지표와 보고 주기", "risk": "산출량이 성과의 대용으로 사용된다", "ref": "17.1"}, {"item": "계획과 리추얼의 재설계 범위", "risk": "작업 속도와 회의 주기가 맞지 않는다", "ref": "17.2"}, {"item": "안티패턴 점검의 주기와 담당", "risk": "문제가 사고로 이어진 뒤에야 발견된다", "ref": "17.3.2"}, {"item": "주니어의 의도적 연습 설계와 평가 기준의 조정", "risk": "검증 역량을 갖춘 인력이 더 이상 충원되지 않는다", "ref": "17.4"}]}]};
+const LS='aux.v2';
+let S={}; try{S=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){S={}}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){} refreshAll()}
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- 라우팅 ---------- */
+const items=$$('.nav-item'), panels=$$('.panel');
+function show(id){
+  panels.forEach(p=>p.classList.toggle('active',p.id===id));
+  items.forEach(a=>a.classList.toggle('active',a.dataset.target===id));
+  const i=panels.findIndex(p=>p.id===id), pg=$('#pager'), prev=panels[i-1], next=panels[i+1];
+  pg.innerHTML=(prev?`<a href="#${prev.id}">← ${prev.dataset.title}</a>`:'<span></span>')+
+               (next?`<a href="#${next.id}">${next.dataset.title} →</a>`:'<span></span>');
+}
+function route(){
+  const raw=location.hash.replace('#',''); const [id,anchor]=raw.split('/');
+  const target=panels.some(p=>p.id===id)?id:'home';
+  show(target);
+  if(anchor){const el=document.getElementById(anchor); if(el) el.scrollIntoView({block:'start'});}
+  else window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- 체크리스트(원문 [ ]) ---------- */
+function initChecks(){
+  panels.forEach(p=>{
+    $$('li.task, td.tick',p).forEach((el,i)=>{
+      const key='ck:'+p.id+':'+i;
+      const box=$('.box',el);
+      const sync=()=>{const on=!!S[key]; box.classList.toggle('on',on); el.classList.toggle('on',on)};
+      sync();
+      el.addEventListener('click',e=>{e.stopPropagation(); S[key]=!S[key]; save()});
+      el._sync=sync;
+    });
+  });
+}
+function checkStats(pid){
+  const p=document.getElementById(pid); const els=$$('li.task, td.tick',p);
+  const on=els.filter((_,i)=>S['ck:'+pid+':'+i]).length; return {on,total:els.length};
+}
+
+/* ---------- 진단 A ---------- */
+function segBtn(key,opts){
+  const v=S[key];
+  return `<span class="seg">${opts.map(o=>`<button data-k="${key}" data-v="${o.v}" class="${v===o.v?'on-'+o.v:''}">${o.t}</button>`).join('')}</span>`;
+}
+function renderA(host){
+  const rows=DATA.diagA.map((r,i)=>{
+    const v=S['A'+i]; const cls=v==='no'?'hit':v==='yes'?'ok':'';
+    return `<tr class="${cls}"><td class="n">${i+1}</td><td>${esc(r.q)}</td><td class="ans">${segBtn('A'+i,[{v:'yes',t:'예'},{v:'no',t:'아니오'}])}</td><td class="sub">${esc(r.no)}</td></tr>`}).join('');
+  const nos=DATA.diagA.filter((_,i)=>S['A'+i]==='no'), answered=DATA.diagA.filter((_,i)=>S['A'+i]).length;
+  let res='';
+  if(answered<DATA.diagA.length) res=`<div class="res">다섯 문항에 모두 답하면 판정이 표시된다. (${answered}/5 응답)</div>`;
+  else if(nos.length>=3) res=`<div class="res bad"><b>"아니오" ${nos.length}개.</b> 지금 필요한 것은 더 나은 도구가 아니라 표준과 도입 체계다. 3부(6~8장)로 돌아간다.<ul>${nos.map(r=>`<li>${esc(r.no)}</li>`).join('')}</ul></div>`;
+  else if(nos.length>0) res=`<div class="res warn"><b>"아니오" ${nos.length}개.</b> 해당 항목의 장만 먼저 읽고 4부로 진행한다.<ul>${nos.map(r=>`<li>${esc(r.no)}</li>`).join('')}</ul></div>`;
+  else res=`<div class="res good"><b>"아니오" 0개.</b> 기반 관행이 갖춰져 있다. 4부로 진행한다.</div>`;
+  host.innerHTML=`<div class="wbox"><h4>진단 A 응답 <span class="tag">상호작용</span></h4><p class="hint">각 문항에 답하면 "아니오"인 항목의 조치가 강조되고 판정이 아래에 표시된다. 응답은 이 브라우저에 저장된다.</p>
+  <table class="qt"><tr><th>#</th><th>질문</th><th>응답</th><th>아니오라면</th></tr>${rows}</table>${res}</div>`;
+}
+
+/* ---------- 진단 B ---------- */
+const CHAIN={2:[6,3],4:[6],8:[6],10:[2,6],7:[3]};
+function renderB(host){
+  const rows=DATA.diagB.map((r,i)=>{
+    const v=S['B'+i]; const cls=v==='yes'?'hit':v==='no'?'ok':v==='na'?'na':'';
+    return `<tr class="${cls}"><td class="n">${i+1}</td><td>${esc(r.q)}</td><td class="ans">${segBtn('B'+i,[{v:'yes',t:'예'},{v:'no',t:'아니오'},{v:'na',t:'확인 불가'}])}</td><td class="sub">${esc(r.ap)}</td><td class="sub">${esc(r.where)}</td><td>${esc(r.step)}</td></tr>`}).join('');
+  const yes=DATA.diagB.map((r,i)=>S['B'+i]==='yes'?i+1:0).filter(Boolean);
+  const na=DATA.diagB.map((r,i)=>S['B'+i]==='na'?i+1:0).filter(Boolean);
+  const answered=DATA.diagB.filter((_,i)=>S['B'+i]).length;
+  const sig=`<div class="sig">${DATA.diagB.map((r,i)=>{const v=S['B'+i];return `<div class="${v==='yes'?'y':v==='no'?'n':v==='na'?'u':''}" title="${esc(r.ap)}">${i+1}</div>`}).join('')}</div><div class="legend"><i style="background:var(--red)"></i>예(신호)<i style="background:var(--green-bg);border:1px solid var(--green)"></i>아니오<i style="background:#d1d5db"></i>확인 불가</div>`;
+  let res='';
+  if(answered<10) res=`<div class="res">열 문항에 모두 답하면 판정이 표시된다. (${answered}/10 응답)</div>`;
+  else{
+    const parts=[];
+    if(yes.length===0) parts.push(`<div class="res good"><b>조기 신호 없음.</b> 다음 분기에 같은 문항으로 반복한다.</div>`);
+    else{
+      const chain=[...new Set(yes.flatMap(n=>(CHAIN[n]||[]).filter(m=>!yes.includes(m))))];
+      parts.push(`<div class="res bad"><b>"예" ${yes.length}개 — 이번 분기 안에 실행할 첫걸음</b><ul>${yes.map(n=>`<li>${n}. ${esc(DATA.diagB[n-1].ap)} → ${esc(DATA.diagB[n-1].step)}</li>`).join('')}</ul>
+      ${chain.length?`<div class="chain">상류 조건 점검(17.3.2): 문항 ${chain.join(', ')}번의 데이터를 함께 확인한다.</div>`:''}</div>`);
+    }
+    if(na.length>=3) parts.push(`<div class="res warn"><b>확인 불가 ${na.length}개.</b> 측정 체계 자체가 없다는 뜻이므로 17.1로 돌아간다.</div>`);
+    res=parts.join('');
+  }
+  host.innerHTML=`<div class="wbox"><h4>진단 B 응답 <span class="tag">상호작용</span></h4><p class="hint">리드와 구성원이 각자 답한다. 데이터가 없는 문항은 "확인 불가"로 남긴다.</p>${sig}
+  <table class="qt"><tr><th>#</th><th>지금 우리 팀은…</th><th>응답</th><th>안티패턴</th><th>신호의 위치</th><th>교정의 첫걸음</th></tr>${rows}</table>${res}</div>`;
+}
+
+/* ---------- 진단 C ---------- */
+function renderC(host){
+  const s=+host.dataset.sec, sec=DATA.diagC[s];
+  const rows=sec.rows.map((r,i)=>{const k='C'+s+'_'+i; const on=!!S[k];
+    return `<tr class="${on?'ok':''}"><td class="ans" style="width:70px"><span class="box ${on?'on':''}" data-k="${k}"></span></td><td>${esc(r.item)}</td><td class="sub">${esc(r.risk)}</td><td class="sub" style="width:80px">${esc(r.ref)}</td></tr>`}).join('');
+  const on=sec.rows.filter((_,i)=>S['C'+s+'_'+i]).length;
+  host.innerHTML=`<table class="qt"><tr><th>결정됨</th><th>결정 항목</th><th>정하지 않으면</th><th>참조</th></tr>${rows}</table>
+  <div class="hint">결정 ${on} / ${sec.rows.length} · 미결정 ${sec.rows.length-on}</div>`;
+}
+function cStats(){return DATA.diagC.map((sec,s)=>{const on=sec.rows.filter((_,i)=>S['C'+s+'_'+i]).length;return {title:sec.title,on,total:sec.rows.length,undec:sec.rows.length-on}})}
+
+/* ---------- 진단 결과 종합 ---------- */
+function renderResult(host){
+  const cs=cStats();
+  const bars=cs.map(c=>`<div class="bar"><span>${esc(c.title)}</span><div class="tr"><div class="f1" style="width:${c.on/c.total*100}%"></div><div class="f2" style="width:${c.undec/c.total*100}%"></div></div><span class="lab">${c.undec} 미결정</span></div>`).join('');
+  const first=cs.find(c=>c.undec>0);
+  const nosA=DATA.diagA.filter((_,i)=>S['A'+i]==='no').length, yesB=DATA.diagB.map((r,i)=>S['B'+i]==='yes'?i+1:0).filter(Boolean);
+  host.innerHTML=`<div class="wbox"><h4>진단 결과 종합 <span class="tag">차트</span></h4>
+  <div class="cards">
+    <div class="card"><div class="k">진단 A</div><div class="v">${nosA}</div><div class="d">"아니오" 개수 (3 이상이면 3부로)</div></div>
+    <div class="card"><div class="k">진단 B</div><div class="v">${yesB.length}</div><div class="d">"예" 문항: ${yesB.length?yesB.join(', '):'없음'}</div></div>
+    <div class="card"><div class="k">진단 C</div><div class="v">${cs.reduce((a,c)=>a+c.undec,0)}</div><div class="d">미결정 합계 / ${cs.reduce((a,c)=>a+c.total,0)}</div></div>
+  </div>
+  <div class="bars">${bars}</div><div class="legend"><i style="background:var(--blue)"></i>결정됨<i style="background:var(--red)"></i>미결정</div>
+  ${first?`<div class="res warn"><b>가장 앞에서 비어 있는 부문: ${esc(first.title)}.</b> 앞 부문이 비어 있으면 뒤 부문의 결정은 실효가 없으므로 이 부문의 장부터 읽는다. 아직 도달하지 않은 뒤 단계의 미결정은 정상이다.</div>`:`<div class="res good"><b>네 부문 모두 결정됨.</b> 분기마다 같은 진단을 반복해 추세를 기록한다.</div>`}
+  </div>`;
+}
+/* ---------- 04 손익 계산기 ---------- */
+function num(id,d){const el=$('#'+id); if(!el) return d; const v=parseFloat(el.value); return isNaN(v)?d:v}
+function renderCalc04(host){
+  const F=S.c04||{single:24,team:8,hourVal:150000,superv:1,reviewH:1,quality:0,tokenSingle:30000,mult:5};
+  host.innerHTML=`<div class="wbox"><h4>손익 부등식 계산기 <span class="tag">상호작용</span></h4><p class="hint">시간 가치 + 품질 이득 &gt; 토큰 비용 + 조율 실패 비용 + 검토 비용 + 감독 비용. 값을 바꾸면 즉시 다시 계산한다. 금액 단위는 원.</p>
+  <div class="form">
+    <div class="grp">좌변 — 이득</div>
+    <label>단일 세션 예상 소요(시간)<input id="c_single" type="number" value="${F.single}"></label>
+    <label>팀 실행 예상 소요(시간)<input id="c_team" type="number" value="${F.team}"></label>
+    <label>단축 1시간의 가치(원) — 장애 조사는 크게, 여유 있는 백로그는 작게<input id="c_hourVal" type="number" value="${F.hourVal}"></label>
+    <label>품질 이득(원) — 기존 게이트·리뷰가 놓쳤을 발견만<input id="c_quality" type="number" value="${F.quality}"></label>
+    <div class="grp">우변 — 비용</div>
+    <label>단일 세션 토큰 비용(원)<input id="c_tokenSingle" type="number" value="${F.tokenSingle}"></label>
+    <label>팀 실행 비용 배수(예: 5)<input id="c_mult" type="number" step="0.5" value="${F.mult}"></label>
+    <label>조율 실패 비용(원) — 충돌·대기로 잃는 시간의 값<input id="c_coord" type="number" value="${F.coord||0}"></label>
+    <label>검토 시간(시간) — 팀 산출물 통합 검토<input id="c_reviewH" type="number" step="0.5" value="${F.reviewH}"></label>
+    <label>감독 시간(시간) — 실행 중 사람이 붙어 있는 시간<input id="c_superv" type="number" step="0.5" value="${F.superv}"></label>
+    <label>검토·감독 1시간의 인건비(원)<input id="c_laborVal" type="number" value="${F.laborVal||80000}"></label>
+  </div>
+  <div id="c04out"></div></div>`;
+  const calc=()=>{
+    const v={single:num('c_single',0),team:num('c_team',0),hourVal:num('c_hourVal',0),quality:num('c_quality',0),tokenSingle:num('c_tokenSingle',0),mult:num('c_mult',1),coord:num('c_coord',0),reviewH:num('c_reviewH',0),superv:num('c_superv',0),laborVal:num('c_laborVal',0)};
+    S.c04=v; try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+    const saved=Math.max(0,v.single-v.team), timeVal=saved*v.hourVal, token=v.tokenSingle*v.mult, review=v.reviewH*v.laborVal, sup=v.superv*v.laborVal;
+    const L=timeVal+v.quality, R=token+v.coord+review+sup, mx=Math.max(L,R,1);
+    const fmt=n=>Math.round(n).toLocaleString()+'원';
+    const row=(parts,cap,tot)=>`<div class="hbar"><div class="cap">${cap}<small>${fmt(tot)}</small></div><div class="tr">${parts.map(p=>`<span style="width:${p.v/mx*100}%;background:${p.c}" title="${p.n}: ${fmt(p.v)}">${p.v/mx>0.1?p.n:''}</span>`).join('')}</div></div>`;
+    const ok=L>R;
+    $('#c04out').innerHTML=`${row([{n:'시간 가치',v:timeVal,c:'#2563eb'},{n:'품질 이득',v:v.quality,c:'#60a5fa'}],'좌변 — 이득',L)}${row([{n:'토큰',v:token,c:'#e5484d'},{n:'조율 실패',v:v.coord,c:'#f08c8f'},{n:'검토',v:review,c:'#d97706'},{n:'감독',v:sup,c:'#f3b76a'}],'우변 — 비용',R)}
+    <div class="legend"><i style="background:#2563eb"></i>시간 가치<i style="background:#60a5fa"></i>품질 이득<i style="background:#e5484d"></i>토큰<i style="background:#f08c8f"></i>조율 실패<i style="background:#d97706"></i>검토<i style="background:#f3b76a"></i>감독</div>
+    <div class="res ${ok?'good':'bad'}"><b>${ok?'부등식 성립':'부등식 불성립'}</b> — 단축 ${saved}시간 × ${v.hourVal.toLocaleString()}원 = ${fmt(timeVal)}, 토큰 ${fmt(token)}(${v.mult}배), 검토+감독 ${fmt(review+sup)}. ${ok?'다른 두 조건(팀원 간 통신의 필요, 파일 소유권 분리)도 충족하면 승인한다.':'더 저렴한 대안을 지정한다. 순차 의존이 강하면 단일 세션, 결과만 필요하면 서브에이전트, 독립 작업이면 병렬 세션이다(그림 15.2).'}</div>`;
+  };
+  $$('input',host).forEach(i=>i.addEventListener('input',calc)); calc();
+}
+
+/* ---------- 02 파일럿 판정 시뮬레이터 ---------- */
+function renderPilot(host){
+  const P=S.p02||{};
+  const g=(k,d)=>P[k]??d;
+  host.innerHTML=`<div class="wbox"><h4>파일럿 판정 시뮬레이터 <span class="tag">상호작용</span></h4><p class="hint">작성 예의 기준을 기본값으로 두었다. 목표와 실측을 입력하면 성공 기준 충족 여부와 실패 기준 발동 여부를 함께 판정한다.</p>
+  <div class="form">
+    <div class="grp">성공 기준 (목표 / 실측)</div>
+    <label>채택: 주간 활성 사용 비율(%) 목표<input id="p_a1" type="number" value="${g('a1',80)}"></label><label>실측<input id="p_a2" type="number" value="${g('a2','')}"></label>
+    <label>산출: 착수→병합 시간 단축(%) 목표<input id="p_b1" type="number" value="${g('b1',20)}"></label><label>실측<input id="p_b2" type="number" value="${g('b2','')}"></label>
+    <label>품질: 반려율·결함률 변화(%p, 악화면 양수) 허용 상한<input id="p_c1" type="number" value="${g('c1',0)}"></label><label>실측<input id="p_c2" type="number" value="${g('c2','')}"></label>
+    <label>체감: "계속 사용하겠다" 응답(%) 목표<input id="p_d1" type="number" value="${g('d1',70)}"></label><label>실측<input id="p_d2" type="number" value="${g('d2','')}"></label>
+    <div class="grp">실패 기준 (해당하면 선택)</div>
+    <label><input type="checkbox" id="p_f1" ${g('f1',false)?'checked':''} style="width:auto"> 4주 차 이후 활성 비율이 기준 아래로 떨어지고 회복되지 않음</label>
+    <label><input type="checkbox" id="p_f2" ${g('f2',false)?'checked':''} style="width:auto"> 품질 지표가 유의미하게 나빠지고 원인이 도구로 좁혀짐</label>
+    <label><input type="checkbox" id="p_f3" ${g('f3',false)?'checked':''} style="width:auto"> 보안 검토에서 해소할 수 없는 차단 사유 확인</label>
+  </div><div id="p02out"></div></div>`;
+  const calc=()=>{
+    const v={}; ['a1','a2','b1','b2','c1','c2','d1','d2'].forEach(k=>v[k]=$('#p_'+k).value); ['f1','f2','f3'].forEach(k=>v[k]=$('#p_'+k).checked);
+    S.p02=v; try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+    const n=x=>x===''?null:parseFloat(x);
+    const rows=[['채택',n(v.a1),n(v.a2),(t,a)=>a>=t,'%'],['산출',n(v.b1),n(v.b2),(t,a)=>a>=t,'%'],['품질',n(v.c1),n(v.c2),(t,a)=>a<=t,'%p'],['체감',n(v.d1),n(v.d2),(t,a)=>a>=t,'%']];
+    const bars=rows.map(([nm,t,a,f,u])=>{const st=a===null?'미측정':f(t,a)?'충족':'미달'; const w=a===null?0:Math.min(100,Math.abs(a)/Math.max(Math.abs(t)||1,Math.abs(a))*100);
+      return `<div class="bar"><span>${nm} (목표 ${t}${u})</span><div class="tr"><div class="${st==='충족'?'f1':st==='미달'?'f2':'f3'}" style="width:${w}%"></div></div><span class="lab">${a===null?'—':a+u} ${st}</span></div>`}).join('');
+    const unmeasured=rows.filter(r=>r[2]===null).length, fails=[v.f1,v.f2,v.f3].filter(Boolean).length, met=rows.filter(r=>r[2]!==null&&r[3](r[1],r[2])).length;
+    let res;
+    if(fails) res=`<div class="res bad"><b>종료.</b> 실패 기준 ${fails}건이 발동했다. 계약을 정리하고 관찰 기록을 남긴 뒤 종료한다. 실패의 원인과 조건은 다음 파일럿의 설계 자료다.</div>`;
+    else if(unmeasured) res=`<div class="res warn"><b>측정 실패 ${unmeasured}건.</b> 판정을 미루지 말고 "측정 실패"로 기록한다.</div>`;
+    else if(met===4) res=`<div class="res good"><b>확산 제안.</b> 성공 기준 네 항목을 모두 충족했다. 확산 일정(6.1.3)의 첫 판정 지점 기록으로 남긴다.</div>`;
+    else res=`<div class="res warn"><b>확산 보류.</b> 성공 기준 ${met}/4 충족. 미달 항목의 원인을 기록하고 기간 연장 여부를 결정한다. 기준을 결과에 맞춰 바꾸지 않는다.</div>`;
+    $('#p02out').innerHTML=`<div class="bars">${bars}</div>${res}`;
+  };
+  $$('input',host).forEach(i=>i.addEventListener('input',calc)); calc();
+}
+
+/* ---------- 07 체크리스트 비용 계산기 ---------- */
+function renderCalc07(host){
+  const C=S.c07||{min:10,prs:100,incident:2};
+  host.innerHTML=`<div class="wbox"><h4>체크리스트 비용 계산기 <span class="tag">상호작용</span></h4><p class="hint">항목을 추가할 때의 비용과 그 항목이 방지하는 사고의 비용을 비교한다.</p>
+  <div class="form"><label>PR당 체크리스트 소요(분)<input id="k_min" type="number" value="${C.min}"></label><label>월 PR 건수<input id="k_prs" type="number" value="${C.prs}"></label><label>방지하는 사고 1건의 복구 비용(인·일)<input id="k_inc" type="number" step="0.5" value="${C.incident}"></label></div><div id="k07out"></div></div>`;
+  const calc=()=>{const v={min:num('k_min',0),prs:num('k_prs',0),incident:num('k_inc',0)}; S.c07=v; try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+    const days=v.min*v.prs/60/8; const be=v.incident>0?(days/v.incident):0;
+    $('#k07out').innerHTML=`<div class="res ${days<=v.incident?'good':'warn'}">월 비용 <b>${days.toFixed(1)}인·일</b>(${v.min}분 × ${v.prs}건). 사고 1건 복구가 ${v.incident}인·일이면 월 <b>${be.toFixed(1)}건</b> 이상 방지할 때 상쇄된다. ${days<=v.incident?'사고 한 건만 막아도 남는 구조다.':'항목이 방지하는 사고가 무엇인지 설명할 수 있어야 한다.'}</div>`};
+  $$('input',host).forEach(i=>i.addEventListener('input',calc)); calc();
+}
+
+/* ---------- 09 로드맵 ---------- */
+const WEEKS=[['1주차','변화의 이해와 첫 세션','1장, 2.1~2.4','팀 현재 상태'],['2주차','동작 원리와 워크플로','2.5~2.7, 3장','지시문 모범 사례'],['3주차','컨텍스트 설계와 확장','4장, 5장','CLAUDE.md 초안'],['4주차','도입 전략과 팀 환경','6장, 7장','파일럿 기준·권한 정책'],['5주차','작업 결합과 Git 전략','9장, 10장','계약 문서·PR 템플릿'],['6주차','리뷰와 품질','11장, 12장','1차 리뷰 도입 계획'],['심화 A','자산화·비용·보안','8·13·14장','자산 승격·비용 리포트·권한 프로파일'],['심화 B','자동화와 성과 측정','15~17장','무인 실행 후보·측정 지표·분기 개선']];
+function renderRoadmap(host){
+  const done=WEEKS.filter((_,i)=>S['wk'+i]).length;
+  host.innerHTML=`<div class="wbox"><h4>스터디 로드맵 <span class="tag">진행 표시</span></h4><p class="hint">읽기·실습 → 팀에 남는 산출물. 카드를 누르면 해당 주차로 이동하고, 오른쪽 위 상자로 완료를 표시한다.</p>
+  <div class="steps">${WEEKS.map((w,i)=>`<div class="step ${S['wk'+i]?'done':''}" data-i="${i}"><span class="chk" data-i="${i}"></span><b>${w[0]}</b>${w[1]}<br><small style="color:var(--label)">${w[2]}</small><small class="out">산출물: ${w[3]}</small></div>`).join('')}</div>
+  <div class="prog"><i style="width:${done/8*100}%"></i></div><div class="hint">${done}/8 완료</div></div>`;
+  $$('.step',host).forEach(el=>el.addEventListener('click',e=>{const i=+el.dataset.i; if(e.target.classList.contains('chk')){S['wk'+i]=!S['wk'+i];save()} else location.hash='s09/wk'+(i+1)}));
+}
+function renderFinish(host){
+  const els=$$('li.task',document.getElementById('s09'));
+  const on=els.slice(0,6).filter((_,i)=>S['ck:s09:'+i]).length;
+  const r=34, c=2*Math.PI*r, off=c*(1-on/6);
+  host.innerHTML=`<div class="wbox"><div class="ring"><svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="${r}" fill="none" stroke="#eceff3" stroke-width="10"/><circle cx="45" cy="45" r="${r}" fill="none" stroke="${on>=4?'#0e9f5d':'#2563eb'}" stroke-width="10" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 45 45)" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">${on}/6</text></svg>
+  <div><b>${on>=4?'스터디가 목적을 달성했다.':'아래 항목을 저장소에서 확인하며 표시한다.'}</b><div class="hint" style="margin:4px 0 0">여섯 항목 가운데 넷 이상이 남았으면 달성이다. 남지 않은 항목은 해당 주차의 결정만 내리는 짧은 모임을 한 번 더 연다.</div></div></div></div>`;
+}
+
+/* ---------- 도입 단계 지도(01·홈 공용) ---------- */
+const STAGES=[['결정 단계','파일럿 전',[['s01','01 도입 키트 안내'],['s02','02 파일럿 기준 문서'],['s03','03 보안 검토 답변'],['s10/hA','10 진단 A (도입 전 점검)']]],
+ ['파일럿 단계','6주 안팎 · 저장소에 배치',[['s05','05 팀 공통 CLAUDE.md'],['s06','06 권한 정책'],['s07','07 PR 템플릿']]],
+ ['확산 단계','팀 → 조직',[['s08','08 온보딩 문서'],['s09','09 스터디 가이드']]],
+ ['운영 단계','분기 점검',[['s04','04 팀 실행 예외 신청서'],['s10/hB','10 진단 B·C 반복']]]];
+function stageHtml(links){
+  return `<div class="stage">${STAGES.map(([t,w,docs])=>`<div class="st"><h5>${t}</h5><div class="when">${w}</div>${docs.map(([h,n])=>links?`<a href="#${h}">${n}</a>`:`<span class="d">${n}</span>`).join('')}</div>`).join('')}</div>`;
+}
+function renderStagemap(host){
+  host.innerHTML=`<div class="wbox"><h4>도입 단계별 문서 배치</h4>${stageHtml(true)}<div class="note">단계가 바뀔 때마다 그 단계의 문서를 채우고, 앞 단계 문서는 판정과 개정의 기준으로 남긴다</div></div>`;
+}
+/* ---------- 진단 부문의 의존 순서(실시간) ---------- */
+const DEP_CH=['6장','7~10장','11~14장','15~17장'], DEP_BG=['#E4EDFB','#D4E3FA','#C6DBF8','#A5C3F5'];
+function renderDeps(host){
+  const cs=cStats(); const fi=cs.findIndex(c=>c.undec>0);
+  host.innerHTML=`<div class="wbox"><h4>진단 부문의 의존 순서 <span class="tag">실시간</span></h4><div class="note" style="margin:0 0 10px">앞 부문이 비어 있으면 뒤 부문의 결정은 실효가 없다</div>
+  <div class="deps">${cs.map((c,i)=>`<div class="dp ${i===fi?'first':''}" style="background:${DEP_BG[i]}"><h5>${esc(c.title.replace(/\s*\(.*\)/,''))}</h5><div class="ch">${DEP_CH[i]} · ${c.total}항목</div><div class="cnt">결정 ${c.on} · 미결정 <b>${c.undec}</b></div></div>`).join('')}</div>
+  <div class="note">${fi>=0?`가장 앞에서 비어 있는 부문은 <b>${esc(cs[fi].title)}</b>이다. 이 부문의 장부터 읽는다.`:'네 부문 모두 결정되었다.'}</div></div>`;
+}
+/* ---------- 04 머리글 ---------- */
+function renderHead04(host){
+  const F=[['h4date','작성일','2026-09-08'],['h4who','신청자','예: 알림팀 김OO'],['h4appr','승인자','예: 리드 박OO'],['h4until','유효 기간','예: 이번 스프린트(9/8~9/19)']];
+  host.innerHTML=`<div class="head4">${F.map(([k,l,ph])=>`<label>${l}<input data-k="${k}" placeholder="${ph}" value="${esc(S[k]||'')}"></label>`).join('')}</div>`;
+  $$('input',host).forEach(i=>i.addEventListener('input',()=>{S[i.dataset.k]=i.value;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}));
+}
+/* ---------- 양식 코드 블록 편집(02·03) ---------- */
+function renderFormcode(host){
+  const key=host.dataset.key, f=DATA.forms[key]; const sk='form:'+key;
+  const val=S[sk]??f.tpl;
+  host.innerHTML=`<div class="toolbar"><span class="lbl">직접 채워 쓰는 양식</span><button class="btn" data-a="sample">작성 예 넣기</button><button class="btn" data-a="reset">빈 양식으로</button><button class="btn pri" data-a="copy">복사</button><button class="btn" data-a="dl">.md 내려받기</button></div>
+  <textarea class="formcode" spellcheck="false">${esc(val)}</textarea>`;
+  const ta=$('textarea',host);
+  ta.addEventListener('input',()=>{S[sk]=ta.value;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}});
+  $$('button',host).forEach(b=>b.onclick=()=>{const a=b.dataset.a;
+    if(a==='sample'){ta.value=f.sample;S[sk]=f.sample;save()}
+    else if(a==='reset'){if(confirm('입력한 내용을 지우고 빈 양식으로 되돌린다.')){ta.value=f.tpl;delete S[sk];save()}}
+    else if(a==='copy'){navigator.clipboard.writeText(ta.value).then(()=>{b.textContent='복사됨';setTimeout(()=>b.textContent='복사',1500)})}
+    else if(a==='dl'){const bl=new Blob([ta.value],{type:'text/markdown'});const x=document.createElement('a');x.href=URL.createObjectURL(bl);x.download=(key==='s02'?'파일럿_기준':'보안_검토_답변')+'.md';x.click()}});
+}
+/* ---------- 표 양식 편집(04·10) ---------- */
+const SAMPLES={
+ 's04':[
+  ['알림 채널 추가(슬랙·카카오 알림톡)','12건 — 채널 어댑터 2, 공통 인터페이스 1, 템플릿 3, 테스트 4, 문서 2','A: services/api/channels/slack/ · B: services/api/channels/kakao/ · C: packages/shared/notify/','채널 간 공통 인터페이스(NotifyChannel)의 시그니처를 작업 도중 합의해야 한다. 결과만 취합해서는 두 어댑터가 맞지 않는다'],
+  ['4일','2일','2일','릴리스 전 QA 기간 2일 확보(출시 일정의 여유)'],
+  ['상위 등급 1','균형 등급 3','약 5배','단일 세션 기준 비용의 6배(초과 시 중단)'],
+  ['낮음 — 파일 소유 분리 완료, 공유 파일 없음','있음 — 공통 인터페이스 확정 전까지 어댑터 구현이 대기','인터페이스 정의를 첫 태스크로 고정하고 확정 후 어댑터를 병렬 착수','리드 1인, 착수·통합 시점에 각 30분'],
+  [['2일','2.5일'],['5배','5.8배'],['1시간','1.5시간'],['1건','1건(인터페이스 불일치를 통합 전에 발견)'],['없음','대기 1회(인터페이스 확정 지연 반나절)']]],
+ 's10':[[ '2026-09-26','리드 1 / 구성원 11','1개(5번 사고 복기 절차)','리드: 2 / 구성원 다수: 2, 9','0 / 1 / 3 / 6','B-9 → 권한 예외 승인 절차와 예외 기한 설정(14.1.1) → 플랫폼 담당 → 11월 중순<br>B-2 → 리뷰 용량 재배정, 1차 리뷰 자동화 검토(11.2) → 리뷰 리드 → 11월 말<br>C → 표준 개정 절차 문서화(7.5.2) → 리드 → 10월 말','2026-12-26']]
+};
+function tableToMd(tb){
+  const rows=$$('tr',tb).map(tr=>$$('th,td',tr).map(c=>c.innerHTML.replace(/<br\s*\/?>/g,' / ').replace(/<[^>]+>/g,'').replace(/\|/g,'\\|').trim()));
+  const [h,...b]=rows; return ['| '+h.join(' | ')+' |','|'+h.map(()=>'---').join('|')+'|',...b.map(r=>'| '+r.join(' | ')+' |')].join('\n');
+}
+function initFormTables(){
+  ['s04','s10'].forEach(sid=>{
+    const p=document.getElementById(sid); let fi=0;
+    $$('table',p).forEach(tb=>{
+      const body=$$('tr',tb).slice(1); const cells=[];
+      body.forEach((tr,r)=>$$('td',tr).forEach((td,c)=>{if(!td.textContent.trim()) cells.push({td,r,c})}));
+      if(!cells.length) return;
+      const idx=fi++; const key=(r,c)=>`cell:${sid}:${idx}:${r}:${c}`;
+      cells.forEach(({td,r,c})=>{td.setAttribute('contenteditable','true');td.setAttribute('data-ph','입력');td.innerHTML=S[key(r,c)]||'';
+        td.addEventListener('input',()=>{S[key(r,c)]=td.innerHTML;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}});
+        td.addEventListener('paste',e=>{e.preventDefault();document.execCommand('insertText',false,e.clipboardData.getData('text/plain'))});});
+      const tbar=document.createElement('div'); tbar.className='toolbar';
+      tbar.innerHTML=`<span class="lbl">셀을 눌러 입력</span><button class="btn" data-a="sample">예시 채우기</button>${sid==='s10'?'<button class="btn" data-a="diag">진단 결과로 채우기</button>':''}<button class="btn" data-a="clear">지우기</button><button class="btn pri" data-a="copy">마크다운 복사</button>`;
+      tb.parentNode.insertBefore(tbar,tb);
+      const fill=vals=>{cells.forEach(({td,r,c})=>{const v=vals[r]; const t=Array.isArray(v)?v[c-1]:(c===1?v:''); if(t!==undefined){td.innerHTML=t;S[key(r,c)]=t}}); save()};
+      tbar.onclick=e=>{const b=e.target.closest('button'); if(!b) return; const a=b.dataset.a;
+        if(a==='sample'){const sm=(SAMPLES[sid]||[])[idx]; if(sm) fill(sm)}
+        else if(a==='diag'){fill(recordRows())}
+        else if(a==='clear'){cells.forEach(({td,r,c})=>{td.innerHTML='';delete S[key(r,c)]});save()}
+        else if(a==='copy'){navigator.clipboard.writeText(tableToMd(tb)).then(()=>{b.textContent='복사됨';setTimeout(()=>b.textContent='마크다운 복사',1500)})}};
+    });
+  });
+}
+function recordRows(){
+  const cs=cStats(); const d=new Date().toISOString().slice(0,10);
+  const nosA=DATA.diagA.map((r,i)=>S['A'+i]==='no'?i+1:0).filter(Boolean);
+  const yesB=DATA.diagB.map((r,i)=>S['B'+i]==='yes'?i+1:0).filter(Boolean);
+  return [d,'',`${nosA.length}개${nosA.length?' ('+nosA.join(', ')+'번)':''}`,`리드: ${yesB.length?yesB.join(', '):'없음'} / 구성원: `,cs.map(c=>c.undec).join(' / '),
+    yesB.map(n=>`B-${n} → ${DATA.diagB[n-1].step} → (담당) → (기한)`).join('<br>'),''];
+}
+
+/* ---------- 홈 ---------- */
+function renderHome(host){
+  const cs=cStats(); const a=DATA.diagA.filter((_,i)=>S['A'+i]==='no').length, aAns=DATA.diagA.filter((_,i)=>S['A'+i]).length;
+  const b=DATA.diagB.filter((_,i)=>S['B'+i]==='yes').length, bAns=DATA.diagB.filter((_,i)=>S['B'+i]).length;
+  const wk=WEEKS.filter((_,i)=>S['wk'+i]).length;
+  let tot=0,on=0; panels.forEach(p=>{const s=checkStats(p.id);tot+=s.total;on+=s.on});
+  host.innerHTML=`<div class="wbox"><h4>도입 단계별 문서 배치 <span class="tag">지도</span></h4>${stageHtml(true)}</div>
+  <div class="wbox" style="margin-top:12px"><h4>진행 요약 <span class="tag">이 브라우저에 저장</span></h4>
+  <div class="cards">
+    <div class="card"><div class="k">진단 A — 기반 관행</div><div class="v">${aAns?a:'—'}</div><div class="d">${aAns?'"아니오" 개수 ('+aAns+'/5 응답)':'미응답'}</div><a href="#s10/hA">진단하기 →</a></div>
+    <div class="card"><div class="k">진단 B — 조기 신호</div><div class="v">${bAns?b:'—'}</div><div class="d">${bAns?'"예" 개수 ('+bAns+'/10 응답)':'미응답'}</div><a href="#s10/hB">진단하기 →</a></div>
+    <div class="card"><div class="k">진단 C — 미결정</div><div class="v">${cs.reduce((x,c)=>x+c.undec,0)}</div><div class="d">${cs.map(c=>c.undec).join(' / ')} (도입/표준/품질/자동화)</div><a href="#s10/hC">점검하기 →</a></div>
+    <div class="card"><div class="k">스터디 진행</div><div class="v">${wk}/8</div><div class="prog"><i style="width:${wk/8*100}%"></i></div><a href="#s09">로드맵 →</a></div>
+    <div class="card"><div class="k">점검 항목 전체</div><div class="v">${on}/${tot}</div><div class="prog"><i style="width:${tot?on/tot*100:0}%"></i></div><div class="d">모든 문서의 점검 목록 합계</div></div>
+  </div></div>`;
+}
+
+/* ---------- 검색 ---------- */
+const IDX=panels.map(p=>({id:p.id,title:p.dataset.title,text:($('.doc',p).innerText||$('.doc',p).textContent).replace(/\s+/g,' ')}));
+function search(q){
+  const box=$('#sresult'); q=q.trim(); if(q.length<2){box.style.display='none';return}
+  const out=[]; const ql=q.toLowerCase();
+  IDX.forEach(s=>{let i=0,n=0; const tl=s.text.toLowerCase();
+    while((i=tl.indexOf(ql,i))>=0&&n<3){const st=Math.max(0,i-40), en=Math.min(s.text.length,i+q.length+60);
+      const snip=esc(s.text.slice(st,i))+'<mark>'+esc(s.text.slice(i,i+q.length))+'</mark>'+esc(s.text.slice(i+q.length,en));
+      out.push(`<a href="#${s.id}"><b>${esc(s.title)}</b>…${snip}…</a>`); i+=q.length; n++;}});
+  box.innerHTML=out.length?out.join(''):'<a>결과 없음</a>'; box.style.display='block';
+}
+$('#q').addEventListener('input',e=>search(e.target.value));
+document.addEventListener('click',e=>{if(!e.target.closest('.search')) $('#sresult').style.display='none'});
+$('#sresult').addEventListener('click',()=>{$('#sresult').style.display='none'});
+
+/* ---------- 조립 ---------- */
+const R={diagA:renderA,diagB:renderB,diagC:renderC,diagResult:renderResult,calc04:renderCalc04,pilot02:renderPilot,calc07:renderCalc07,roadmap:renderRoadmap,finish:renderFinish,home:renderHome,stagemap:renderStagemap,deps:renderDeps,head04:renderHead04,formcode:renderFormcode};
+const LIGHT=['diagA','diagB','diagC','diagResult','roadmap','finish','home','stagemap','deps'];
+function refreshAll(){
+  $$('.w').forEach(w=>{if(LIGHT.includes(w.dataset.w)) R[w.dataset.w](w)});
+  panels.forEach(p=>$$('li.task, td.tick',p).forEach(el=>el._sync&&el._sync()));
+  panels.forEach(p=>{const s=checkStats(p.id); const b=$(`[data-badge="${p.id}"]`); if(!b) return;
+    if(p.id==='s10'){const u=cStats().reduce((x,c)=>x+c.undec,0); b.textContent='미결정 '+u; b.classList.toggle('done',u===0); return}
+    if(p.id==='s09'){const w=WEEKS.filter((_,i)=>S['wk'+i]).length; b.textContent=w+'/8'; b.classList.toggle('done',w===8); return}
+    b.textContent=s.total?`${s.on}/${s.total}`:''; b.classList.toggle('done',s.total>0&&s.on===s.total)});
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.seg button'); if(b){S[b.dataset.k]=S[b.dataset.k]===b.dataset.v?undefined:b.dataset.v; save(); return}
+  const x=e.target.closest('.box[data-k]'); if(x){S[x.dataset.k]=!S[x.dataset.k]; save()}
+});
+initChecks(); initFormTables();
+$$('.w').forEach(w=>{if(!LIGHT.includes(w.dataset.w)) R[w.dataset.w](w)});
+refreshAll(); route();
+</script>
+</body></html>

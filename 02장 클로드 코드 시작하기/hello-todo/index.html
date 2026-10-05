@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>hello-todo</title>
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 1.4rem; }
+    form { display: flex; gap: 8px; margin-bottom: 16px; }
+    input[type="text"] { flex: 1; padding: 8px; }
+    ul { list-style: none; padding: 0; }
+    li { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+    li.done span { text-decoration: line-through; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>오늘의 할 일</h1>
+  <form id="add-form">
+    <input type="text" id="new-todo" placeholder="할 일을 입력">
+    <button type="submit">추가</button>
+  </form>
+  <ul id="list"></ul>
+
+  <script src="todo.js"></script>
+  <script>
+    // 저장소에서 목록을 읽고, 화면을 그리고, 조작을 연결한다.
+    let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+
+    function save() {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+
+    function render() {
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      visibleTodos(todos, false).forEach(function (todo, i) {
+        const li = document.createElement("li");
+        if (todo.done) li.className = "done";
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = todo.done;
+        check.addEventListener("change", function () {
+          todos = toggleDone(todos, i);
+          save();
+          render();
+        });
+        const span = document.createElement("span");
+        span.textContent = todo.text;
+        li.appendChild(check);
+        li.appendChild(span);
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById("add-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const input = document.getElementById("new-todo");
+      todos = addTodo(todos, input.value);
+      input.value = "";
+      save();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
