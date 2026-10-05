@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(//**/.env*)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)",
+      "Bash(aws *)",
+      "Bash(kubectl *)",
+      "WebFetch"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(npm publish *)"
+    ],
+    "allow": [
+      "Bash(npm test *)",
+      "Bash(npm run lint *)",
+      "WebFetch(domain:docs.pg-partner.example)"
+    ],
+    "defaultMode": "default"
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "denyRead": ["~/.aws", "~/.ssh", "~/.kube", "~/.claude"]
+    },
+    "network": {
+      "allowedDomains": ["registry.npmjs.org", "docs.pg-partner.example"]
+    },
+    "allowUnsandboxedCommands": false
+  }
+}

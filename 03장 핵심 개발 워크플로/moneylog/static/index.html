@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>moneylog</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>moneylog</h1>
+
+    <!-- 월 선택과 요약 -->
+    <section class="summary" id="summary">
+      <label>
+        조회 월
+        <input type="month" id="month-input" />
+      </label>
+      <p class="total">이번 달 지출 <strong id="total-amount">0</strong>원</p>
+      <ul id="category-totals"></ul>
+    </section>
+
+    <!-- 지출 입력 폼 -->
+    <form id="expense-form">
+      <input type="date" id="date-input" required />
+      <select id="category-input" required></select>
+      <input type="number" id="amount-input" placeholder="금액(원), 환불은 음수" required />
+      <input type="text" id="memo-input" placeholder="메모 (선택)" maxlength="100" />
+      <button type="submit">등록</button>
+      <p class="form-error" id="form-error"></p>
+    </form>
+
+    <!-- 지출 목록 -->
+    <ul id="expense-list"></ul>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

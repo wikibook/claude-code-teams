@@ -1,0 +1,13 @@
+{
+    "forceLoginMethod": "claudeai",
+    "forceLoginOrgUUID": "d3f1a2b4-0000-0000-0000-000000000000",
+    "permissions": {
+        "deny": [
+            "Bash(* prod-db*)",
+            "Read(**/*.pem)"
+        ],
+        "disableBypassPermissionsMode": "disable"
+    },
+    "claudeMd": "보안 사고 의심 시 작업을 멈추고 #sec-incident 채널에 보고한다.",
+    "requiredMinimumVersion": "2.1.200"
+}

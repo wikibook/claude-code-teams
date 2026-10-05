@@ -1,0 +1,6 @@
+--- a/tests/test_points.py
++++ b/tests/test_points.py
+@@ -28,7 +28,7 @@ def test_earn_points_on_discounted_order():
+     order = make_order(list_price=10000, discount=2000)
+-    assert earn_points(order, RATE_1PCT).amount == 80
++    assert earn_points(order, RATE_1PCT).amount == 100

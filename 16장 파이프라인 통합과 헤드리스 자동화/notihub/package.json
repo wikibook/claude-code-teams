@@ -1,0 +1,10 @@
+{
+  "name": "notihub-ops",
+  "version": "1.0.0",
+  "private": true,
+  "description": "16장 예제의 시험용 구성",
+  "scripts": {
+    "lint:template": "node tools/lint_template.js",
+    "test": "node tools/render_test.js"
+  }
+}

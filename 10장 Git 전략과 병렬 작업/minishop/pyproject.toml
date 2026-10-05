@@ -1,0 +1,9 @@
+[project]
+name = "minishop"
+version = "0.1.0"
+description = "클로드 코드 팀 운영하기 - 관통 예제 프로젝트"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

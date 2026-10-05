@@ -1,0 +1,39 @@
+# 결합 전 검증 게이트 (9.3.3)
+# 모든 PR은 이 워크플로를 통과해야 병합할 수 있다.
+name: merge-gate
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  contract-and-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0   # git diff에 전체 이력이 필요하다
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 의존성 설치
+        run: pip install pytest
+
+      - name: 계약 테스트 (가장 먼저, 실패 시 즉시 중단)
+        run: python -m pytest tests/test_pricing_contract.py -v
+
+      - name: 전체 테스트
+        run: python -m pytest tests/ -v
+
+      - name: 명세 변경 동반 확인
+        # 계약 구현(pricing.py)이 바뀌면 계약 문서도 함께 바뀌어야 한다
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          if echo "$CHANGED" | grep -q "src/minishop/pricing.py"; then
+            if ! echo "$CHANGED" | grep -q "specs/pricing-contract.md"; then
+              echo "::error::pricing.py를 수정하면 specs/pricing-contract.md도 갱신해야 합니다"
+              exit 1
+            fi
+          fi

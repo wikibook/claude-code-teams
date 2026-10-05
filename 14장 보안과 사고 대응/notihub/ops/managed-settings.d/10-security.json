@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(//**/.env*)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)",
+      "Bash(rm -rf /*)"
+    ],
+    "disableBypassPermissionsMode": "disable"
+  },
+  "forceLoginMethod": "claudeai",
+  "forceLoginOrgUUID": "d3f1a2b4-0000-0000-0000-000000000000",
+  "allowManagedHooksOnly": true
+}

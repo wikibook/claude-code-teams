@@ -1,0 +1,5 @@
+# 팀 표준 파일 — 수정 PR에 아래 소유자의 리뷰가 자동으로 요청된다
+/CLAUDE.md          @notihub/standards
+/.claude/           @notihub/standards
+/docs/policies/     @notihub/standards
+/specs/             @notihub/api-owners

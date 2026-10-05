@@ -1,0 +1,1 @@
+specs/budget-alert.md의 인터페이스 절과 화면 절을 읽고, 요약 카드에 예산 초과 경고 표시를 구현해줘. 백엔드(/api/budgets, summary의 alerts)는 이미 구현되어 있다. static/의 app.js와 style.css만 수정할 것.

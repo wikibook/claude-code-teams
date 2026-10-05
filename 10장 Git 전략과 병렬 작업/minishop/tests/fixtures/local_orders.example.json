@@ -1,0 +1,12 @@
+{
+  "orders": [
+    {
+      "id": "ORD-1001",
+      "items": [
+        {"sku": "A-1", "unit_price": 12000, "quantity": 2},
+        {"sku": "B-7", "unit_price": 5500, "quantity": 1}
+      ],
+      "discount_total": 3000
+    }
+  ]
+}

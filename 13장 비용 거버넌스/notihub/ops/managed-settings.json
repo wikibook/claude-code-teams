@@ -1,0 +1,9 @@
+{
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+    "OTEL_METRICS_EXPORTER": "otlp",
+    "OTEL_EXPORTER_OTLP_PROTOCOL": "grpc",
+    "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel.notihub.internal:4317",
+    "OTEL_RESOURCE_ATTRIBUTES": "team.id=payments,cost_center=eng-02"
+  }
+}

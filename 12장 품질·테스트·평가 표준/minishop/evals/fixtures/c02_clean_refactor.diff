@@ -1,0 +1,8 @@
+--- a/src/minishop/points.py
++++ b/src/minishop/points.py
+@@ -60,9 +60,8 @@ def apply_usage(account, usage):
+-    entries = account.entries
+-    balance = sum(e.signed_amount for e in entries)
++    balance = account.balance()
+     if usage.amount > balance:
+         raise InsufficientPoints(usage.amount, balance)

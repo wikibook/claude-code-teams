@@ -1,0 +1,22 @@
+name: Issue Triage
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: "/triage-issue ISSUE_NUMBER: ${{ github.event.issue.number }}"
+          claude_args: |
+            --max-turns 8
+            --allowedTools "Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh search issues:*)"

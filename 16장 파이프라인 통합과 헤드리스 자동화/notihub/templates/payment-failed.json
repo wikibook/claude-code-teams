@@ -1,0 +1,6 @@
+{
+  "channel": "email",
+  "title": "결제가 완료되지 않았습니다",
+  "body": "$user_name님, $amount 결제가 실패했습니다. 결제 수단을 확인해 주세요.",
+  "vars": ["user_name", "amount"]
+}

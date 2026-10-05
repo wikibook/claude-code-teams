@@ -1,0 +1,7 @@
+{
+  "env": {
+    "OTEL_LOGS_EXPORTER": "otlp",
+    "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT": "http://otel.notihub.internal:4317",
+    "OTEL_LOG_TOOL_DETAILS": "1"
+  }
+}
